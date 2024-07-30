@@ -22,12 +22,14 @@ public class BaseService<E extends BaseEntity, R extends BaseRepository<E, T>, T
     }
 
     public E findById(T id) {
-        return this.repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity is not found"));
-    } 
+        return this.repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity is not found"));
+    }
 
     public E findById(T id, String errorMessage) {
-        return this.repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage));
-    } 
+        return this.repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage));
+    }
 
     public E create(E entity) {
         return this.repository.save(entity);

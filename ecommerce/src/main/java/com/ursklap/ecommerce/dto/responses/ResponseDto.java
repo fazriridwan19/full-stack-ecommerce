@@ -11,7 +11,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApiResponse<E> {
+public class ResponseDto<E> {
     private Integer status;
     private String message;
     private E data;
