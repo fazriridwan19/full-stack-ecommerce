@@ -18,16 +18,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CategoryService extends BaseService<Category, CategoryRepository, Long> {
 
-    public CategoryDto create(CategoryDto categoryDto) {
+    public Category create(CategoryDto categoryDto) {
         log.info("Saving category to database");
-        this.create(
+        return super.create(
                 Category.builder()
                         .name(categoryDto.getName())
                         .description(categoryDto.getDescription())
                         .imageUrl(categoryDto.getImageUrl())
                         .build());
-
-        return categoryDto;
     }
 
     public List<CategoryDto> findAllCategory() {

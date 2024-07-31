@@ -1,8 +1,6 @@
-package com.ursklap.ecommerce.dto;
+package com.ursklap.ecommerce.dto.requests;
 
 import java.util.List;
-
-import com.ursklap.ecommerce.models.Media;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -15,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProductDto {
+public class ProductRequest {
     @Size(max = 50)
     private String name;
 
@@ -35,5 +33,5 @@ public class ProductDto {
 
     private Long categoryId;
 
-    private List<Media> listMedia;
+    private List<String> listMediaId;
 }

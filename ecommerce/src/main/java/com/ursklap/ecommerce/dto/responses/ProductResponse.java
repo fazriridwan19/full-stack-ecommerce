@@ -23,11 +23,11 @@ public class ProductResponse {
     private Integer discountedPrice;
     private Boolean isInStock;
     private Integer stock;
-    private Category category;
+    private CategoryResponse category;
     private List<Media> listMedia;
 
     public ProductResponse(Long id, String name, String code, String description, Integer price,
-            Integer discountedPrice, Boolean isInStock, Integer stock, Category category) {
+            Integer discountedPrice, Boolean isInStock, Integer stock, CategoryResponse category) {
         this.id = id;
         this.name = name;
         this.code = code;

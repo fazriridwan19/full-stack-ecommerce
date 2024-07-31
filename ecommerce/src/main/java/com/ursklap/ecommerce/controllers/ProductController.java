@@ -3,16 +3,12 @@ package com.ursklap.ecommerce.controllers;
 import java.util.List;
 import java.util.random.RandomGenerator;
 
+import com.ursklap.ecommerce.utils.ResponseApiGenerator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.ursklap.ecommerce.dto.ProductDto;
+import com.ursklap.ecommerce.dto.requests.ProductRequest;
 import com.ursklap.ecommerce.dto.responses.ProductResponse;
 import com.ursklap.ecommerce.dto.responses.ResponseDto;
 import com.ursklap.ecommerce.models.Product;
@@ -29,45 +25,60 @@ public class ProductController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ResponseDto<Product>> save(@RequestBody ProductDto request) {
-        Product product = this.productService.create(
-                Product.builder()
-                        .name(request.getName())
-                        .description(request.getDescription())
-                        .code(request.getCode())
-                        .price(request.getPrice())
-                        .stock(request.getStock())
-                        .isInStock(request.getStock() > 1)
-                        .discountedPrice(request.getDiscountedPrice()).build());
-
-        // TODO : Create utils class to simplify this repetitive code
-        ResponseDto<Product> response = new ResponseDto<Product>();
-        response.setData(product);
-        response.setStatus(201);
-        response.setMessage("Successfully add product");
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<ResponseDto<Product>> save(@RequestBody ProductRequest request) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(
+                        ResponseApiGenerator
+                                .generator()
+                                .generate(this.productService.create(request), 201, "Successfully add product"));
     }
 
     @PostMapping("bulk")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ResponseDto<String>> saveBulk(@RequestBody List<ProductDto> request) {
+    public ResponseEntity<ResponseDto<String>> saveBulk(@RequestBody List<ProductRequest> request) {
         this.productService.saveBulk(request);
-        ResponseDto<String> response = new ResponseDto<String>();
-        response.setData("Success");
-        response.setStatus(201);
-        response.setMessage("Successfully add product");
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(
+                        ResponseApiGenerator
+                                .generator()
+                                .generate("Success", 201, "Successfully add product"));
     }
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ResponseDto<List<ProductResponse>>> findAll() {
-        ResponseDto<List<ProductResponse>> response = new ResponseDto<List<ProductResponse>>();
-        response.setData(this.productService.findAllProduct());
-        response.setStatus(200);
-        response.setMessage("Successfully retrieve products");
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        ResponseApiGenerator
+                                .generator()
+                                .generate(this.productService.findAllProduct(), 200, "Successfully retrieve all product"));
     }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ResponseDto<ProductResponse>> findById(@PathVariable("id") Long id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        ResponseApiGenerator
+                                .generator()
+                                .generate(this.productService.findByIdProduct(id), 200, "Successfully retrieve all product"));
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<ResponseDto<Product>> update(@PathVariable("id") Long id, @RequestBody ProductRequest request) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        ResponseApiGenerator
+                                .generator()
+                                .generate(this.productService.update(id, request), 201, "Successfully retrieve all product"));
+    }
+
 
     @PostMapping("/request/test")
     @ResponseStatus(HttpStatus.CREATED)
@@ -119,5 +130,4 @@ public class ProductController {
         response.setMessage("Successfully add product");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
 }

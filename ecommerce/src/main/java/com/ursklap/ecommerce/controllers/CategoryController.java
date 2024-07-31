@@ -3,6 +3,7 @@ package com.ursklap.ecommerce.controllers;
 import java.util.List;
 import java.util.random.RandomGenerator;
 
+import com.ursklap.ecommerce.models.Category;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,10 +28,10 @@ public class CategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ResponseDto<CategoryDto>> create(@RequestBody @Valid CategoryDto request) {
-        CategoryDto categoryDto = this.categoryService.create(request);
-        ResponseDto<CategoryDto> response = new ResponseDto<CategoryDto>();
-        response.setData(categoryDto);
+    public ResponseEntity<ResponseDto<Category>> create(@RequestBody @Valid CategoryDto request) {
+        Category category = this.categoryService.create(request);
+        ResponseDto<Category> response = new ResponseDto<Category>();
+        response.setData(category);
         response.setStatus(HttpStatus.CREATED.value());
         response.setMessage("Category successfully created");
 
