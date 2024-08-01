@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.file.AccessDeniedException;
@@ -19,6 +20,13 @@ public class ErrorUtil {
         return ResponseEntity
                 .status(exception.getStatusCode())
                 .body(new ErrorResponse(exception.getStatusCode().toString(), exception.getReason(), exception.getStatusCode().value()));
+    }
+
+    @ExceptionHandler(HttpClientErrorException.Unauthorized.class)
+    public ResponseEntity<ErrorResponse> error(HttpClientErrorException.Unauthorized exception) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponse("Unauthorized", exception.getMessage(), HttpStatus.UNAUTHORIZED.value()));
     }
 
     @ExceptionHandler(AccessDeniedException.class)

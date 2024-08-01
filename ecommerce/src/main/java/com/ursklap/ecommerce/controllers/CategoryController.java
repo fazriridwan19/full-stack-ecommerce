@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.random.RandomGenerator;
 
 import com.ursklap.ecommerce.models.Category;
+import com.ursklap.ecommerce.utils.ResponseApiGenerator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,12 +31,23 @@ public class CategoryController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ResponseDto<Category>> create(@RequestBody @Valid CategoryDto request) {
         Category category = this.categoryService.create(request);
-        ResponseDto<Category> response = new ResponseDto<Category>();
-        response.setData(category);
-        response.setStatus(HttpStatus.CREATED.value());
-        response.setMessage("Category successfully created");
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(
+                        ResponseApiGenerator
+                                .generator()
+                                .generate(category, HttpStatus.CREATED.value(), "Category successfully created"));
+    }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    @GetMapping
+    public ResponseEntity<ResponseDto<List<CategoryDto>>> getAllCategories() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        ResponseApiGenerator
+                                .generator()
+                                .generate(this.categoryService.findAllCategory(), HttpStatus.OK.value(), "Successfully retrieve categories"));
+
     }
 
     @PostMapping("/request/test")
@@ -63,16 +75,4 @@ public class CategoryController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
-    @GetMapping
-    public ResponseEntity<ResponseDto<List<CategoryDto>>> getAllCategories() {
-        ResponseDto<List<CategoryDto>> response = new ResponseDto<List<CategoryDto>>();
-        response.setData(this.categoryService.findAllCategory());
-        response.setMessage("Categories successfully fetched");
-        response.setStatus(HttpStatus.OK.value());
-
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-
-    }
-
 }
