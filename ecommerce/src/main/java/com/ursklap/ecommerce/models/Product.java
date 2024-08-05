@@ -50,4 +50,7 @@ public class Product extends BaseEntity {
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     private List<Media> listMedia;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    private List<CartDetail> cartDetails;
 }

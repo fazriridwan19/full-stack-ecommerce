@@ -26,11 +26,14 @@ public class User extends BaseEntity {
 
     private String avatar;
 
-    @Column(length = 15)
+    @Column(length = 15, unique = true)
     private String phoneNumber;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "credential_id", referencedColumnName = "id")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Credential credential;
+
+    @OneToOne(mappedBy = "user")
+    private Cart cart;
 }
