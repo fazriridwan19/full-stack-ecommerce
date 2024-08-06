@@ -14,9 +14,9 @@ import java.util.List;
 @Getter
 @Setter
 public class Cart extends BaseEntity {
-    private Integer totalQuantity;
+    private Integer totalQuantity = 0;
 
-    private Integer totalPrice;
+    private Integer totalPrice = 0;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")

@@ -2,9 +2,11 @@ package com.ursklap.ecommerce.services;
 
 import com.ursklap.ecommerce.dto.requests.LoginRequest;
 import com.ursklap.ecommerce.dto.requests.RegistrationRequest;
+import com.ursklap.ecommerce.models.Cart;
 import com.ursklap.ecommerce.models.Credential;
 import com.ursklap.ecommerce.models.CustomUserDetails;
 import com.ursklap.ecommerce.models.User;
+import com.ursklap.ecommerce.repositories.CartRepository;
 import com.ursklap.ecommerce.repositories.CredentialRepository;
 import com.ursklap.ecommerce.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -31,6 +33,7 @@ public class AuthService {
     private AuthenticationManager authenticationManager;
     private CustomUserDetailsService customUserDetailsService;
     private JwtService jwtService;
+    private CartRepository cartRepository;
 
     @Transactional
     public void registration(RegistrationRequest request) {
@@ -40,8 +43,12 @@ public class AuthService {
         User user = modelMapper.map(request, User.class);
         user.setCredential(credential);
 
+        Cart cart = new Cart();
+        cart.setUser(user);
+
         credentialRepository.save(credential);
         userRepository.save(user);
+        cartRepository.save(cart);
     }
 
     public String login(LoginRequest request) {
