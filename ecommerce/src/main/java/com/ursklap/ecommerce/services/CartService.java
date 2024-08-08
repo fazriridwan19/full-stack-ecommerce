@@ -1,12 +1,14 @@
 package com.ursklap.ecommerce.services;
 
 import com.ursklap.ecommerce.dto.requests.CartRequest;
+import com.ursklap.ecommerce.dto.responses.CartResponse;
 import com.ursklap.ecommerce.models.Cart;
 import com.ursklap.ecommerce.models.CartDetail;
 import com.ursklap.ecommerce.models.CustomUserDetails;
 import com.ursklap.ecommerce.models.Product;
 import com.ursklap.ecommerce.repositories.CartDetailRepository;
 import com.ursklap.ecommerce.repositories.CartRepository;
+import com.ursklap.ecommerce.repositories.MediaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -46,5 +48,13 @@ public class CartService {
         product.setStock(product.getStock() - request.getQuantity());
         product.setIsInStock(product.getStock() >= 1);
         this.productService.create(product);
+    }
+
+    public List<CartResponse> findCartDetailsByCurrentUserCart(CustomUserDetails userDetails) {
+        return cartDetailRepository.findCartDetailsByCurrentUserCart(userDetails.getCredential().getUser().getCart().getId());
+    }
+
+    public CartResponse findCartDetailById(Long id) {
+        return this.cartDetailRepository.findCartDetailById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart detail is not found"));
     }
 }

@@ -5,6 +5,8 @@ import java.util.random.RandomGenerator;
 
 import com.ursklap.ecommerce.models.Category;
 import com.ursklap.ecommerce.utils.ResponseApiGenerator;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +31,7 @@ public class CategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<ResponseDto<Category>> create(@RequestBody @Valid CategoryDto request) {
         Category category = this.categoryService.create(request);
         return ResponseEntity
@@ -52,6 +55,7 @@ public class CategoryController {
 
     @PostMapping("/request/test")
     @ResponseStatus(HttpStatus.CREATED)
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<ResponseDto<String>> createBulk() {
         for (int i = 0; i < 1000; i++) {
             int leftLimit = 97; // letter 'a'

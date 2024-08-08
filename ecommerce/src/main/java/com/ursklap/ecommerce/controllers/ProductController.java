@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.random.RandomGenerator;
 
 import com.ursklap.ecommerce.utils.ResponseApiGenerator;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,7 @@ public class ProductController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<ResponseDto<Product>> save(@RequestBody ProductRequest request) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -36,6 +39,7 @@ public class ProductController {
 
     @PostMapping("bulk")
     @ResponseStatus(HttpStatus.CREATED)
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<ResponseDto<String>> saveBulk(@RequestBody List<ProductRequest> request) {
         this.productService.saveBulk(request);
         return ResponseEntity
@@ -70,6 +74,7 @@ public class ProductController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<ResponseDto<Product>> update(@PathVariable("id") Long id, @RequestBody ProductRequest request) {
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -82,6 +87,7 @@ public class ProductController {
 
     @PostMapping("/request/test")
     @ResponseStatus(HttpStatus.CREATED)
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<ResponseDto<String>> createBulk() {
         for (int i = 0; i < 1000; i++) {
             int leftLimit = 97; // letter 'a'

@@ -9,6 +9,10 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class CartResponse {
+    private Long cartId;
+
+    private Long cartDetailId;
+
     private Integer quantity;
 
     private Integer totalPrice;

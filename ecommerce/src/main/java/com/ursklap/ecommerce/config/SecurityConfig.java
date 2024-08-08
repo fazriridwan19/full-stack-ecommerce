@@ -5,6 +5,7 @@ import com.ursklap.ecommerce.services.CustomUserDetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -44,6 +45,14 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                         .requestMatchers("/api/v1/auth/**")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/products/**")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/categories/**")
+                        .permitAll()
+                        .requestMatchers("/swagger-ui/**")
+                        .permitAll()
+                        .requestMatchers("/v3/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated())
