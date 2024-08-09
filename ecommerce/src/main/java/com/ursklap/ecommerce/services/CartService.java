@@ -1,7 +1,10 @@
 package com.ursklap.ecommerce.services;
 
+import com.ursklap.ecommerce.dto.requests.CartDetailUpdateRequest;
 import com.ursklap.ecommerce.dto.requests.CartRequest;
 import com.ursklap.ecommerce.dto.responses.CartResponse;
+import com.ursklap.ecommerce.dto.responses.CategoryResponse;
+import com.ursklap.ecommerce.dto.responses.ProductResponse;
 import com.ursklap.ecommerce.models.Cart;
 import com.ursklap.ecommerce.models.CartDetail;
 import com.ursklap.ecommerce.models.CustomUserDetails;
@@ -10,6 +13,7 @@ import com.ursklap.ecommerce.repositories.CartDetailRepository;
 import com.ursklap.ecommerce.repositories.CartRepository;
 import com.ursklap.ecommerce.repositories.MediaRepository;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +27,7 @@ public class CartService {
     private ProductService productService;
     private CartDetailRepository cartDetailRepository;
     private CartRepository cartRepository;
+    private ModelMapper modelMapper;
 
     @Transactional
     public void addProduct(CartRequest request, CustomUserDetails userDetails) {
@@ -54,7 +59,23 @@ public class CartService {
         return cartDetailRepository.findCartDetailsByCurrentUserCart(userDetails.getCredential().getUser().getCart().getId());
     }
 
-    public CartResponse findCartDetailById(Long id) {
+    public CartResponse findCartDetailByIdAsCartResponse(Long id) {
         return this.cartDetailRepository.findCartDetailById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart detail is not found"));
+    }
+
+    private CartDetail findCartDetailById(Long id) {
+        return this.cartDetailRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart detail is not found"));
+    }
+
+    public void updateCartDetail(CartDetailUpdateRequest request) {
+        CartDetail cartDetail = this.findCartDetailById(request.getCartDetailId());
+        cartDetail.setQuantity(request.getQuantity());
+        cartDetail.setTotalPrice(request.getQuantity() * cartDetail.getProduct().getPrice());
+        cartDetailRepository.save(cartDetail);
+    }
+
+    public void removeCartDetail(Long id) {
+        CartDetail cartDetail = this.findCartDetailById(id);
+        cartDetailRepository.delete(cartDetail);
     }
 }

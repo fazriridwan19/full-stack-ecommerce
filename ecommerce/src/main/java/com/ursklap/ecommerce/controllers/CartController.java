@@ -1,6 +1,7 @@
 package com.ursklap.ecommerce.controllers;
 
 import com.ursklap.ecommerce.annotation.CurrentUser;
+import com.ursklap.ecommerce.dto.requests.CartDetailUpdateRequest;
 import com.ursklap.ecommerce.dto.requests.CartRequest;
 import com.ursklap.ecommerce.dto.responses.CartResponse;
 import com.ursklap.ecommerce.dto.responses.ResponseDto;
@@ -51,6 +52,28 @@ public class CartController {
                 .body(
                         ResponseApiGenerator
                                 .generator()
-                                .generate(this.cartService.findCartDetailById(id), HttpStatus.OK.value(), "Successfully retrieve product from cart"));
+                                .generate(this.cartService.findCartDetailByIdAsCartResponse(id), HttpStatus.OK.value(), "Successfully retrieve product from cart"));
+    }
+
+    @PutMapping("cart-detail/update")
+    public ResponseEntity<ResponseDto<String>> updateCartDetail(@RequestBody CartDetailUpdateRequest request) {
+        this.cartService.updateCartDetail(request);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        ResponseApiGenerator
+                                .generator()
+                                .generate("Success", HttpStatus.OK.value(), "Successfully update product from cart"));
+    }
+
+    @DeleteMapping("cart-detail/remove/{id}")
+    public ResponseEntity<ResponseDto<String>> removeCartDetail(@PathVariable("id") Long id) {
+        this.cartService.removeCartDetail(id);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        ResponseApiGenerator
+                                .generator()
+                                .generate("Success", HttpStatus.OK.value(), "Successfully remove product from cart"));
     }
 }
