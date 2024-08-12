@@ -3,17 +3,14 @@ package com.ursklap.ecommerce.services;
 import com.ursklap.ecommerce.dto.requests.CartDetailUpdateRequest;
 import com.ursklap.ecommerce.dto.requests.CartRequest;
 import com.ursklap.ecommerce.dto.responses.CartResponse;
-import com.ursklap.ecommerce.dto.responses.CategoryResponse;
-import com.ursklap.ecommerce.dto.responses.ProductResponse;
 import com.ursklap.ecommerce.models.Cart;
 import com.ursklap.ecommerce.models.CartDetail;
 import com.ursklap.ecommerce.models.CustomUserDetails;
 import com.ursklap.ecommerce.models.Product;
 import com.ursklap.ecommerce.repositories.CartDetailRepository;
 import com.ursklap.ecommerce.repositories.CartRepository;
-import com.ursklap.ecommerce.repositories.MediaRepository;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +24,6 @@ public class CartService {
     private ProductService productService;
     private CartDetailRepository cartDetailRepository;
     private CartRepository cartRepository;
-    private ModelMapper modelMapper;
 
     @Transactional
     public void addProduct(CartRequest request, CustomUserDetails userDetails) {
@@ -49,10 +45,6 @@ public class CartService {
         cart.setTotalQuantity(cart.getTotalQuantity() + cartDetail.getQuantity());
         cart.setTotalPrice(cart.getTotalPrice() + cartDetail.getTotalPrice());
         this.cartRepository.save(cart);
-
-        product.setStock(product.getStock() - request.getQuantity());
-        product.setIsInStock(product.getStock() >= 1);
-        this.productService.create(product);
     }
 
     public List<CartResponse> findCartDetailsByCurrentUserCart(CustomUserDetails userDetails) {
@@ -63,7 +55,7 @@ public class CartService {
         return this.cartDetailRepository.findCartDetailById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart detail is not found"));
     }
 
-    private CartDetail findCartDetailById(Long id) {
+    public CartDetail findCartDetailById(Long id) {
         return this.cartDetailRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart detail is not found"));
     }
 

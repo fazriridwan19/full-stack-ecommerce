@@ -1,11 +1,9 @@
 package com.ursklap.ecommerce.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ursklap.ecommerce.models.base.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -15,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Order extends BaseEntity {
     @Column(length = 50)
     private String email;
@@ -28,5 +27,6 @@ public class Order extends BaseEntity {
     private Status currentStatus;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<OrderHistory> histories;
 }
