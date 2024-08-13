@@ -1,8 +1,6 @@
 package com.ursklap.ecommerce.services;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,11 +18,11 @@ public class JwtService {
     @Value("${secret-key}")
     private String SECRET_KEY;
 
-    public String extractUsername(String token) {
+    public String extractUsername(String token) throws JwtException {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) throws JwtException {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
@@ -44,7 +42,7 @@ public class JwtService {
                 .compact();
     }
 
-    private Claims extractAllClaims(String token) {
+    private Claims extractAllClaims(String token) throws JwtException {
         return Jwts
                 .parserBuilder()
                 .setSigningKey(getSignInKey())

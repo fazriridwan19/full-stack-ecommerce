@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
 
 @Entity
 @Table(name = "cart_details")
@@ -30,6 +29,6 @@ public class CartDetail extends BaseEntity {
     @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)
     private Product product;
 
-    @OneToMany(mappedBy = "cartDetail", fetch = FetchType.EAGER)
-    private List<Order> orders;
+    @OneToOne(mappedBy = "cartDetail", fetch = FetchType.EAGER)
+    private Order order;
 }

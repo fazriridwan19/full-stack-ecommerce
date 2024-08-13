@@ -56,7 +56,7 @@ public class CartService {
     }
 
     public CartDetail findCartDetailById(Long id) {
-        return this.cartDetailRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart detail is not found"));
+        return this.cartDetailRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart detail for id " + id + " is not found"));
     }
 
     public void updateCartDetail(CartDetailUpdateRequest request) {

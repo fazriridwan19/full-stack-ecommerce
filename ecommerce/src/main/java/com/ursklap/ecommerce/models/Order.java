@@ -18,7 +18,7 @@ public class Order extends BaseEntity {
     @Column(length = 50)
     private String email;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "cart_detail_id", referencedColumnName = "id", nullable = false)
     private CartDetail cartDetail;
 

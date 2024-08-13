@@ -22,9 +22,9 @@ public class OrderController {
 
     @PostMapping("checkout")
     public ResponseEntity<ResponseDto<String>> checkout(@RequestBody List<CheckoutRequest> requests) {
-        this.orderService.checkoutBulk(requests);
+        ;
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(ResponseApiGenerator.generator().generate("Success", HttpStatus.CREATED.value(), "Checkout success"));
+                .body(ResponseApiGenerator.generator().generate("Success", HttpStatus.CREATED.value(), this.orderService.checkoutBulk(requests)));
     }
 }
