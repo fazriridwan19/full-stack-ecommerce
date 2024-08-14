@@ -9,6 +9,7 @@ import com.ursklap.ecommerce.models.CustomUserDetails;
 import com.ursklap.ecommerce.models.Product;
 import com.ursklap.ecommerce.repositories.CartDetailRepository;
 import com.ursklap.ecommerce.repositories.CartRepository;
+import com.ursklap.ecommerce.utils.ValidateProduct;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -27,24 +29,29 @@ public class CartService {
 
     @Transactional
     public void addProduct(CartRequest request, CustomUserDetails userDetails) {
+        Cart userCart = userDetails.getCredential().getUser().getCart();
         Product product = this.productService.findById(request.getProductId(), "Cannot add product to cart, product not found");
-        if (!product.getIsInStock()) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Product out of stock");
-        }
-        if (request.getQuantity() > product.getStock()) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Maximum quantity product is " + product.getStock());
-        }
-        CartDetail cartDetail = new CartDetail();
-        cartDetail.setCart(userDetails.getCredential().getUser().getCart());
-        cartDetail.setProduct(product);
-        cartDetail.setQuantity(request.getQuantity());
-        cartDetail.setTotalPrice(product.getPrice() * request.getQuantity());
-        this.cartDetailRepository.save(cartDetail);
+        ValidateProduct.validateAvailability(product, request.getQuantity());
 
-        Cart cart = userDetails.getCredential().getUser().getCart();
-        cart.setTotalQuantity(cart.getTotalQuantity() + cartDetail.getQuantity());
-        cart.setTotalPrice(cart.getTotalPrice() + cartDetail.getTotalPrice());
-        this.cartRepository.save(cart);
+        Optional<CartDetail> optionalCartDetail = this.cartDetailRepository.findByCartAndProduct(userCart, product);
+        CartDetail cartDetail = new CartDetail();
+
+        if (optionalCartDetail.isPresent()) {
+            cartDetail = optionalCartDetail.get();
+            this.updateCartDetail(new CartDetailUpdateRequest(cartDetail.getId(), cartDetail.getQuantity() + request.getQuantity()));
+        } else {
+            cartDetail.setCart(userDetails.getCredential().getUser().getCart());
+            cartDetail.setProduct(product);
+            cartDetail.setQuantity(request.getQuantity());
+            cartDetail.setTotalPrice(product.getPrice() * request.getQuantity());
+            cartDetail.setTotalDiscountedPrice(product.getDiscountedPrice() * request.getQuantity());
+            this.cartDetailRepository.save(cartDetail);
+
+            Cart cart = userDetails.getCredential().getUser().getCart();
+            cart.setTotalQuantity(cart.getTotalQuantity() + cartDetail.getQuantity());
+            cart.setTotalPrice(cart.getTotalPrice() + cartDetail.getTotalPrice());
+            this.cartRepository.save(cart);
+        }
     }
 
     public List<CartResponse> findCartDetailsByCurrentUserCart(CustomUserDetails userDetails) {
@@ -63,6 +70,7 @@ public class CartService {
         CartDetail cartDetail = this.findCartDetailById(request.getCartDetailId());
         cartDetail.setQuantity(request.getQuantity());
         cartDetail.setTotalPrice(request.getQuantity() * cartDetail.getProduct().getPrice());
+        cartDetail.setTotalDiscountedPrice(request.getQuantity() * cartDetail.getProduct().getDiscountedPrice());
         cartDetailRepository.save(cartDetail);
     }
 

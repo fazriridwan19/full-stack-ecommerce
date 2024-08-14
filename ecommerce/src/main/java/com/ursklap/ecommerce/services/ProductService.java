@@ -82,5 +82,4 @@ public class ProductService extends BaseService<Product, ProductRepository, Long
         }
         return response.get();
     }
-
 }

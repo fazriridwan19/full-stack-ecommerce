@@ -12,8 +12,8 @@ import lombok.*;
 @Setter
 @Builder
 public class OrderHistory extends BaseEntity {
-    @Column(length = 50)
-    private String email;
+    @Column(nullable = false)
+    private Long userId;
 
     private String notes;
 

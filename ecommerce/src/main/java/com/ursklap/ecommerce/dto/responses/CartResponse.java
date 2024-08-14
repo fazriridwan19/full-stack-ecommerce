@@ -17,5 +17,7 @@ public class CartResponse {
 
     private Integer totalPrice;
 
+    private Integer totalDiscountedPrice;
+
     private ProductResponse product;
 }

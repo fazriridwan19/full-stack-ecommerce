@@ -21,6 +21,9 @@ public class CartDetail extends BaseEntity {
     @Column(nullable = false)
     private Integer totalPrice;
 
+    @Column(nullable = true)
+    private Integer totalDiscountedPrice;
+
     @ManyToOne
     @JoinColumn(name = "cart_id", referencedColumnName = "id", nullable = false)
     private Cart cart;
@@ -28,7 +31,4 @@ public class CartDetail extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)
     private Product product;
-
-    @OneToOne(mappedBy = "cartDetail", fetch = FetchType.EAGER)
-    private Order order;
 }

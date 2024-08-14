@@ -53,4 +53,7 @@ public class Product extends BaseEntity {
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     private List<CartDetail> cartDetails;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    private List<OrderItem> orderItems;
 }

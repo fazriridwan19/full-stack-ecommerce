@@ -14,22 +14,15 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.file.AccessDeniedException;
-import java.util.Objects;
 
 @RestControllerAdvice
 public class ErrorUtil {
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ErrorResponse<?>> error(ResponseStatusException exception) {
-        try {
-            return ResponseEntity
-                    .status(exception.getStatusCode())
-                    .body(new ErrorResponse<String[]>(exception.getStatusCode().toString(), Objects.requireNonNull(exception.getReason()).split(", "), exception.getStatusCode().value()));
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(exception.getStatusCode())
-                    .body(new ErrorResponse<String>(exception.getStatusCode().toString(), exception.getReason(), exception.getStatusCode().value()));
-        }
+        return ResponseEntity
+                .status(exception.getStatusCode())
+                .body(new ErrorResponse<String>(exception.getStatusCode().toString(), exception.getReason(), exception.getStatusCode().value()));
     }
 
     @ExceptionHandler(JwtException.class)
