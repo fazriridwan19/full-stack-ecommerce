@@ -1,6 +1,8 @@
 package com.ursklap.ecommerce.services;
 
 import com.ursklap.ecommerce.dto.requests.CheckoutRequest;
+import com.ursklap.ecommerce.dto.responses.OrderItemResponse;
+import com.ursklap.ecommerce.dto.responses.OrderResponse;
 import com.ursklap.ecommerce.models.*;
 import com.ursklap.ecommerce.models.etc.StatusEnum;
 import com.ursklap.ecommerce.repositories.*;
@@ -13,9 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -29,20 +31,24 @@ public class OrderService {
     private OrderRepository orderRepository;
     private OrderHistoryRepository orderHistoryRepository;
     private OrderItemRepository orderItemRepository;
+    private PaymentRepository paymentRepository;
 
     @Transactional
     public Order checkout(CheckoutRequest request, CustomUserDetails userDetails) {
+        Integer totalAmount = 0;
         Status currentStatus = this.statusRepository
                 .findById(StatusEnum.PENDING.getValue())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Status is not found"));
+        Payment payment = this.paymentRepository
+                .findById(request.getPaymentId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Payment is not found"));
         Order order = Order.builder()
                 .code(UUID.randomUUID().toString())
                 .userId(userDetails.getCredential().getUser().getId())
-                .paymentMethod(request.getPaymentMethod())
-                .paymentAccount(request.getPaymentAccount())
                 .orderDate(LocalDate.now().toString())
                 .orderTime(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")))
                 .currentStatus(currentStatus)
+                .payment(payment)
                 .build();
         order = this.orderRepository.save(order);
 
@@ -64,7 +70,12 @@ public class OrderService {
             this.productService.create(product);
 
             this.cartService.removeCartDetail(cartDetailId);
+
+            totalAmount += orderItem.getTotalPrice();
         }
+
+        order.setTotalAmount(totalAmount);
+        this.orderRepository.save(order);
 
         OrderHistory orderHistory = OrderHistory.builder()
                 .order(order)
@@ -75,6 +86,15 @@ public class OrderService {
         this.orderHistoryRepository.save(orderHistory);
 
         return order;
+    }
+
+    public OrderResponse findByIdAsDto(Long id) {
+        OrderResponse response = this.orderRepository
+                .findByIdAsDto(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order is not found"));
+        List<OrderItemResponse> orderItemResponse = this.orderItemRepository.findAllByOrderIdAsDto(id);
+        response.setItems(orderItemResponse);
+        return response;
     }
 
     public void payment() {

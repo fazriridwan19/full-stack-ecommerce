@@ -21,12 +21,6 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private Long userId;
 
-    @Column(length = 50, nullable = false)
-    private String paymentMethod;
-
-    @Column(nullable = false)
-    private String paymentAccount;
-
     @Column(length = 20)
     private String orderDate;
 
@@ -39,9 +33,15 @@ public class Order extends BaseEntity {
     @Column(length = 10)
     private String paymentTime;
 
+    private Integer totalAmount;
+
     @ManyToOne
     @JoinColumn(name = "current_status_id", referencedColumnName = "id", nullable = false)
     private Status currentStatus;
+
+    @ManyToOne
+    @JoinColumn(name = "payment_id", referencedColumnName = "id", nullable = false)
+    private Payment payment;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     private List<OrderItem> items;

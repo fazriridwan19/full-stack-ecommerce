@@ -3,6 +3,8 @@ package com.ursklap.ecommerce.services;
 import com.ursklap.ecommerce.dto.requests.CartDetailUpdateRequest;
 import com.ursklap.ecommerce.dto.requests.CartRequest;
 import com.ursklap.ecommerce.dto.responses.CartResponse;
+import com.ursklap.ecommerce.dto.responses.CategoryResponse;
+import com.ursklap.ecommerce.dto.responses.ProductResponse;
 import com.ursklap.ecommerce.models.Cart;
 import com.ursklap.ecommerce.models.CartDetail;
 import com.ursklap.ecommerce.models.CustomUserDetails;
@@ -11,6 +13,7 @@ import com.ursklap.ecommerce.repositories.CartDetailRepository;
 import com.ursklap.ecommerce.repositories.CartRepository;
 import com.ursklap.ecommerce.utils.ValidateProduct;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,9 +29,10 @@ public class CartService {
     private ProductService productService;
     private CartDetailRepository cartDetailRepository;
     private CartRepository cartRepository;
+    private ModelMapper modelMapper;
 
     @Transactional
-    public void addProduct(CartRequest request, CustomUserDetails userDetails) {
+    public CartResponse addProduct(CartRequest request, CustomUserDetails userDetails) {
         Cart userCart = userDetails.getCredential().getUser().getCart();
         Product product = this.productService.findById(request.getProductId(), "Cannot add product to cart, product not found");
         ValidateProduct.validateAvailability(product, request.getQuantity());
@@ -52,6 +56,14 @@ public class CartService {
             cart.setTotalPrice(cart.getTotalPrice() + cartDetail.getTotalPrice());
             this.cartRepository.save(cart);
         }
+        CategoryResponse categoryResponse = this.modelMapper.map(cartDetail.getProduct().getCategory(), CategoryResponse.class);
+        ProductResponse productResponse = this.modelMapper.map(cartDetail.getProduct(), ProductResponse.class);
+        productResponse.setCategory(categoryResponse);
+        CartResponse cartResponse = this.modelMapper.map(cartDetail, CartResponse.class);
+        cartResponse.setCartId(cartDetail.getCart().getId());
+        cartResponse.setCartDetailId(cartDetail.getId());
+        cartResponse.setProduct(productResponse);
+        return cartResponse;
     }
 
     public List<CartResponse> findCartDetailsByCurrentUserCart(CustomUserDetails userDetails) {

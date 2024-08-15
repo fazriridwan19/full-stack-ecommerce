@@ -25,14 +25,13 @@ public class CartController {
     private CartService cartService;
 
     @PostMapping("add-product")
-    public ResponseEntity<ResponseDto<String>> addProduct(@RequestBody CartRequest request, @Parameter(hidden = true) @CurrentUser CustomUserDetails userDetails) {
-        this.cartService.addProduct(request, userDetails);
+    public ResponseEntity<ResponseDto<CartResponse>> addProduct(@RequestBody CartRequest request, @Parameter(hidden = true) @CurrentUser CustomUserDetails userDetails) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(
                         ResponseApiGenerator
                                 .generator()
-                                .generate("Successfully add product to cart", HttpStatus.CREATED.value(), "Successfully add product to cart"));
+                                .generate(this.cartService.addProduct(request, userDetails), HttpStatus.CREATED.value(), "Successfully add product to cart"));
     }
 
     @GetMapping("items")
