@@ -8,5 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class PaymentRequest {
+    private Long orderId;
     private Integer amount;
+    private String account;
 }

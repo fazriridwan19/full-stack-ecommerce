@@ -2,6 +2,7 @@ package com.ursklap.ecommerce.controllers;
 
 import com.ursklap.ecommerce.annotation.CurrentUser;
 import com.ursklap.ecommerce.dto.requests.CheckoutRequest;
+import com.ursklap.ecommerce.dto.requests.PaymentRequest;
 import com.ursklap.ecommerce.dto.responses.OrderResponse;
 import com.ursklap.ecommerce.dto.responses.ResponseDto;
 import com.ursklap.ecommerce.models.CustomUserDetails;
@@ -21,10 +22,11 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping("checkout")
-    public ResponseEntity<ResponseDto<Order>> checkout(@RequestBody CheckoutRequest request, @Parameter(hidden = true) @CurrentUser CustomUserDetails userDetails) {
+    public ResponseEntity<ResponseDto<String>> checkout(@RequestBody CheckoutRequest request, @Parameter(hidden = true) @CurrentUser CustomUserDetails userDetails) {
+        this.orderService.checkout(request, userDetails);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(ResponseApiGenerator.generator().generate(this.orderService.checkout(request, userDetails), HttpStatus.CREATED.value(), "Checkout success"));
+                .body(ResponseApiGenerator.generator().generate("Success", HttpStatus.CREATED.value(), "Checkout success"));
     }
 
     @GetMapping("{id}")
@@ -32,5 +34,21 @@ public class OrderController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ResponseApiGenerator.generator().generate(this.orderService.findByIdAsDto(id), HttpStatus.OK.value(), "Successfully retrieve order"));
+    }
+
+    @PostMapping("payment")
+    public ResponseEntity<ResponseDto<String>> payment(@RequestBody PaymentRequest request) {
+        this.orderService.payment(request);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ResponseApiGenerator.generator().generate("Success", HttpStatus.OK.value(), "Successfully pay the order"));
+    }
+
+    @PostMapping("confirmation/{orderId}")
+    public ResponseEntity<ResponseDto<String>> confirmation(@PathVariable("orderId") Long orderId) {
+        this.orderService.confirmation(orderId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ResponseApiGenerator.generator().generate("Success", HttpStatus.OK.value(), "Successfully pay the order"));
     }
 }
