@@ -6,7 +6,7 @@ export interface Product {
   name: string;
   description: string;
   price: number;
-  discounted: number;
+  discountedPrice: number;
   stock: number;
   isInStock: boolean;
   category: Category;

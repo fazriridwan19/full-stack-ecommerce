@@ -2,7 +2,7 @@
 import Filter from "@/components/Filter";
 import ProductList from "@/components/ProductList";
 import { Product } from "@/models/Product";
-import getProducts from "@/services/ProductService";
+import { getProducts } from "@/services/ProductService";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 

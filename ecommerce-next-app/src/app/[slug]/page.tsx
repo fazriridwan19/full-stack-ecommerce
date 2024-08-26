@@ -3,9 +3,10 @@
 import Add from "@/components/Add";
 import CustomizeProducts from "@/components/CustomizeProducts";
 import ProductImages from "@/components/ProductImages";
-import Reviews from "@/components/Reviews";
-import { Suspense } from "react";
-const product = {
+import { Product } from "@/models/Product";
+import { getProductById } from "@/services/ProductService";
+import { useEffect, useState } from "react";
+const productEx = {
   id: 1,
   code: "00000",
   name: "Product test 1",
@@ -67,48 +68,68 @@ const product = {
     },
   ],
 };
-const SinglePage = () => {
+const SinglePage = ({ params }: { params: { slug: string } }) => {
+  const [product, setProduct] = useState<Product | null>(null);
+  const fetchData = async () => {
+    try {
+      const res = await getProductById(params.slug);
+      if (res && res.status === 200) {
+        setProduct(res.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+  let idrFormatter = new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+  });
   return (
     <div className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 relative flex flex-col lg:flex-row gap-16">
       {/* IMG */}
       <div className="w-full lg:w-1/2 lg:sticky top-20 h-max">
-        <ProductImages key={product.code} items={product.media?.items} />
+        <ProductImages key={product?.code} items={productEx.media?.items} />
       </div>
       {/* TEXTS */}
       <div className="w-full lg:w-1/2 flex flex-col gap-6">
-        <h1 className="text-4xl font-medium">{product.name}</h1>
-        <p className="text-gray-500">{product.description}</p>
+        <h1 className="text-4xl font-medium">{product?.name}</h1>
+        <p className="text-gray-500">{product?.description}</p>
         <div className="h-[2px] bg-gray-100" />
-        {product.pricing?.price === product.pricing?.discountedPrice ? (
-          <h2 className="font-medium text-2xl">${product.pricing?.price}</h2>
+        {product?.price === product?.discountedPrice ? (
+          <h2 className="font-medium text-2xl">
+            {idrFormatter.format(product?.price as number)}
+          </h2>
         ) : (
           <div className="flex items-center gap-4">
             <h3 className="text-xl text-gray-500 line-through">
-              ${product.pricing?.price}
+              {idrFormatter.format(product?.price as number)}
             </h3>
             <h2 className="font-medium text-2xl">
-              ${product.pricing?.discountedPrice}
+              {idrFormatter.format(product?.discountedPrice as number)}
             </h2>
           </div>
         )}
         <div className="h-[2px] bg-gray-100" />
-        {product.variants && product.productOptions ? (
+        {productEx.variants && productEx.productOptions ? (
           <CustomizeProducts
-            key={product.code}
-            productId={product.code!}
-            variants={product.variants}
-            productOptions={product.productOptions}
+            key={product?.code}
+            productId={product?.code!}
+            variants={productEx?.variants}
+            productOptions={productEx?.productOptions}
           />
         ) : (
           <Add
-            key={product.code}
-            productId={product.code!}
+            key={product?.code}
+            productId={product?.code!}
             variantId="00000000-0000-0000-0000-000000000000"
-            stockNumber={product.stock.quantity}
+            stockNumber={product?.stock as number}
           />
         )}
         <div className="h-[2px] bg-gray-100" />
-        {product.additionalInfoSections?.map((section: any) => (
+        {productEx.additionalInfoSections?.map((section: any) => (
           <div className="text-sm" key={section.title}>
             <h4 className="font-medium mb-4">{section.title}</h4>
             <p>{section.description}</p>

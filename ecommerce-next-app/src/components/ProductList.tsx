@@ -5,14 +5,17 @@ import Image from "next/image";
 import Link from "next/link";
 
 const ProductList = ({ data: products }: PropModel<Product[]>) => {
-  console.log(products);
-
   return (
     <div className="mt-12 flex gap-x-8 gap-y-16 justify-start flex-wrap">
       {products.map((product, index) => {
+        let idrFormatter = new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+        });
         return (
           <Link
-            href={`/${product.code}`}
+            key={index}
+            href={`/${product.id}`}
             className="w-full flex flex-col gap-4 sm:w-[45%] lg:w-[22%]"
           >
             <div className="relative w-full h-80">
@@ -34,7 +37,9 @@ const ProductList = ({ data: products }: PropModel<Product[]>) => {
             <div className="flex justify-between">
               <span className="font-medium">{product.name}</span>
             </div>
-            <span className="font-semibold">Rp. {product.price}</span>
+            <span className="font-semibold">
+              {idrFormatter.format(product.price)}
+            </span>
             {/* TODO: It should be short description */}
             <div className="text-sm text-gray-500">{product.description}</div>
             <button className="rounded-2xl ring-1 ring-custom text-custom py-2 px-4 text-xs hover:bg-custom hover:text-white w-max">
