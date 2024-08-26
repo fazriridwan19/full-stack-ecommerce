@@ -56,4 +56,9 @@ public class Product extends BaseEntity {
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     private List<OrderItem> orderItems;
+
+    /*
+    * TODO:
+    *  - Add list media
+    *  - Add field short description*/
 }
