@@ -5,19 +5,21 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import CartModal from "./CartModal";
+import { authenticated } from "@/services/AuthService";
 
 const NavIcons = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const isLoggedIn = false;
+  const isLoggedIn = authenticated();
   const router = useRouter();
   const handleProfile = () => {
     if (!isLoggedIn) {
       router.push("/login");
-    }
-    setIsProfileOpen((prev) => !prev);
-    if (isCartOpen) {
-      setIsCartOpen((prev) => !prev);
+    } else {
+      setIsProfileOpen((prev) => !prev);
+      if (isCartOpen) {
+        setIsCartOpen((prev) => !prev);
+      }
     }
   };
   const handleCart = () => {
