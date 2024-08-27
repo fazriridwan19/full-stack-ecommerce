@@ -61,7 +61,8 @@ public class AuthService {
                     )
             );
         } catch (AuthenticationException exception) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Username or password is not valid");
+            log.error(exception.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Username or password is not valid");
         }
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(request.getUsername());
         return jwtService.generateToken(userDetails);
