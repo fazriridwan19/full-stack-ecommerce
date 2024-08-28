@@ -1,6 +1,6 @@
 "use server";
 
-import { ApiResponse } from "@/models/ApiResponse";
+import { ApiResponse } from "@/dto/responses/ApiResponse";
 import { Category } from "@/models/Category";
 import axios from "axios";
 

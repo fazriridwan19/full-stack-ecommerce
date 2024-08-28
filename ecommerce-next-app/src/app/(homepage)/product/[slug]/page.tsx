@@ -2,6 +2,7 @@
 
 import Add from "@/components/Add";
 import CustomizeProducts from "@/components/CustomizeProducts";
+import Footer from "@/components/Footer";
 import ProductImages from "@/components/ProductImages";
 import { Product } from "@/models/Product";
 import { getProductById } from "@/services/ProductService";

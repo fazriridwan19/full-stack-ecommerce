@@ -1,5 +1,5 @@
 "use server";
-import { ApiResponse } from "@/models/ApiResponse";
+import { ApiResponse } from "@/dto/responses/ApiResponse";
 import { Product } from "@/models/Product";
 import axios from "axios";
 

@@ -1,7 +1,7 @@
 "use client";
 import { EyeFilledIcon } from "@/components/EyeFilledIcon";
 import { EyeSlashFilledIcon } from "@/components/EyeSlashFilled";
-import { LoginRequest } from "@/models/LoginRequest";
+import { LoginRequest } from "@/dto/requests/LoginRequest";
 import { login } from "@/services/AuthService";
 import {
   Button,

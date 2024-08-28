@@ -1,10 +1,13 @@
+"use client";
 import Link from "next/link";
 import Hamburger from "./Hamburber";
 import Image from "next/image";
 import SearchBar from "./SearchBar";
 import NavIcons from "./NavIcons";
+import { PropModel } from "@/models/PropModel";
+import { CartResponse } from "@/dto/responses/CartResponse";
 
-const Navbar = () => {
+const Navbar = ({ data: cartItems }: PropModel<CartResponse[]>) => {
   return (
     <div className="h-20 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 relative">
       {/* MOBILE */}
@@ -33,7 +36,7 @@ const Navbar = () => {
         {/* RIGHT */}
         <div className="w-2/3 xl:w-1/2 flex items-center justify-between gap-8">
           <SearchBar />
-          <NavIcons />
+          <NavIcons data={cartItems} />
         </div>
       </div>
     </div>

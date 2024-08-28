@@ -1,8 +1,8 @@
 "use server";
-import { ApiResponse } from "@/models/ApiResponse";
-import { LoginRequest } from "@/models/LoginRequest";
+import { ApiResponse } from "@/dto/responses/ApiResponse";
+import { LoginRequest } from "@/dto/requests/LoginRequest";
 import axios from "axios";
-import { hasCookie, setCookie } from "./CookieService";
+import { deleteCookie, getCookie, hasCookie, setCookie } from "./CookieService";
 
 export const login = async (loginRequest: LoginRequest) => {
   const res = await axios.request<ApiResponse<string>>({
@@ -16,6 +16,14 @@ export const login = async (loginRequest: LoginRequest) => {
   return res.data;
 };
 
-export const authenticated = () => {
+export const getToken = () => {
+  return getCookie("token");
+};
+
+export const isAuthenticated = () => {
   return hasCookie();
+};
+
+export const logout = () => {
+  deleteCookie();
 };
