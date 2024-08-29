@@ -7,4 +7,5 @@ export interface CartResponse {
   totalPrice: number;
   totalDiscountedPrice: number;
   product: Product;
+  isSelected: boolean;
 }

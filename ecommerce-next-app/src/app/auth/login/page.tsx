@@ -9,23 +9,29 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
+  CircularProgress,
   Input,
 } from "@nextui-org/react";
 import { AxiosError } from "axios";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useMemo, useState } from "react";
 
 export default function LoginPage() {
+  const [loading, setLoading] = useState(false);
   const [loginRequest, setLoginRequest] = useState<LoginRequest | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
   const router = useRouter();
+  const error =
+    useSearchParams().has("error") && !!useSearchParams().get("error");
   const handleLogin = async (e: FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (loginRequest && loginRequest.username && loginRequest.password) {
       try {
+        setLoading(true);
         await login(loginRequest);
+        setLoading(false);
         router.push("/");
       } catch (error: any) {
         console.log(AxiosError.from(await error));
@@ -39,6 +45,15 @@ export default function LoginPage() {
 
   return (
     <div className="flex flex-col h-screen justify-center items-center bg-gray-100 dark:bg-gray-900">
+      {error && (
+        <div
+          className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+          role="alert"
+        >
+          <span className="font-medium">Login required !</span> Login before
+          processing yout request.
+        </div>
+      )}
       <Card className="w-full max-w-md">
         <CardHeader className="justify-center">
           <h3 className="text-2xl text-center">Login</h3>
@@ -91,7 +106,7 @@ export default function LoginPage() {
             className="w-full bg-black text-white"
             onClick={(e) => handleLogin(e)}
           >
-            Login
+            {loading ? <CircularProgress /> : "Login"}
           </Button>
           <Link href="#" className="text-sm text-center" prefetch={false}>
             Forgot Password?

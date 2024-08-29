@@ -114,21 +114,26 @@ const SinglePage = ({ params }: { params: { slug: string } }) => {
           </div>
         )}
         <div className="h-[2px] bg-gray-100" />
-        {productEx.variants && productEx.productOptions ? (
-          <CustomizeProducts
-            key={product?.code}
-            productId={product?.code!}
-            variants={productEx?.variants}
-            productOptions={productEx?.productOptions}
-          />
-        ) : (
-          <Add
-            key={product?.code}
-            productId={product?.code!}
-            variantId="00000000-0000-0000-0000-000000000000"
-            stockNumber={product?.stock as number}
-          />
-        )}
+        <div className="flex justify-between items-center">
+          {productEx.variants && productEx.productOptions ? (
+            <CustomizeProducts
+              key={product?.code}
+              productId={product?.code!}
+              variants={productEx?.variants}
+              productOptions={productEx?.productOptions}
+            />
+          ) : (
+            <Add
+              key={product?.code}
+              productId={product?.code!}
+              variantId="00000000-0000-0000-0000-000000000000"
+              stockNumber={product?.stock as number}
+            />
+          )}
+          <button className="h-10 w-36 text-sm rounded-3xl ring-1 ring-custom text-lama py-2 px-4 hover:bg-custom hover:ring-white disabled:cursor-not-allowed disabled:bg-pink-200 disabled:ring-0 disabled:text-white disabled:ring-none">
+            Add to Cart
+          </button>
+        </div>
         <div className="h-[2px] bg-gray-100" />
         {productEx.additionalInfoSections?.map((section: any) => (
           <div className="text-sm" key={section.title}>

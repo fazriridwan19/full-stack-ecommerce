@@ -2,33 +2,41 @@
 import { CartRequest } from "@/dto/requests/CartRequest";
 import { Product } from "@/models/Product";
 import { PropModel } from "@/models/PropModel";
+import { isAuthenticated } from "@/services/AuthService";
 import { addProduct } from "@/services/CartService";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 
 const ProductList = ({ data: products }: PropModel<Product[]>) => {
+  const router = useRouter();
   const addProductToCart = async (productId: number) => {
-    const request: CartRequest = {
-      productId,
-      quantity: 1,
-    };
-    try {
-      const res = await addProduct(request);
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: `Success`,
-        text: `Product with code ${res.data.product.code} successfully added to your cart`,
-        showConfirmButton: true,
-      });
-    } catch (error) {
-      console.log(error);
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Something went wrong!",
-      });
+    const isLoggedIn = await isAuthenticated();
+    if (!isLoggedIn) {
+      router.push("/auth/login?error=1");
+    } else {
+      const request: CartRequest = {
+        productId,
+        quantity: 1,
+      };
+      try {
+        const res = await addProduct(request);
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: `Success`,
+          text: `Product with code ${res.data.product.code} successfully added to your cart`,
+          showConfirmButton: true,
+        });
+      } catch (error) {
+        console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong!",
+        });
+      }
     }
   };
   return (

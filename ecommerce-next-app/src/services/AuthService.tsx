@@ -20,7 +20,7 @@ export const getToken = () => {
   return getCookie("token");
 };
 
-export const isAuthenticated = () => {
+export const isAuthenticated = async () => {
   return hasCookie();
 };
 

@@ -1,32 +1,78 @@
 "use client";
 
+import { CheckoutRequest } from "@/dto/requests/CheckoutRequest";
 import { CartResponse } from "@/dto/responses/CartResponse";
 import { PropModel } from "@/models/PropModel";
+import { Checkbox, CheckboxGroup } from "@nextui-org/react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 const CartModal = ({ data: cartItems }: PropModel<CartResponse[]>) => {
   let idrFormatter = new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
   });
+  const [checkoutRequest, setCheckoutRequest] = useState<CheckoutRequest>({
+    paymentId: null,
+    cartDetailIds: [],
+  });
+  const handleSelect = (cartDetailId: number, index: number) => {
+    let temp: CheckoutRequest | null = null;
+    cartItems = cartItems.map((val) => {
+      if (val.cartDetailId === cartDetailId) {
+        val.isSelected = !val.isSelected;
+      }
+      return val;
+    });
+    if (
+      !cartItems.find((item) => item.cartDetailId === cartDetailId)?.isSelected
+    ) {
+      checkoutRequest.cartDetailIds = checkoutRequest.cartDetailIds?.filter(
+        (val) => val !== cartDetailId
+      );
+      temp = {
+        ...checkoutRequest,
+        cartDetailIds: [...(checkoutRequest?.cartDetailIds as [])],
+      };
+      setCheckoutRequest(temp);
+    } else {
+      temp = {
+        ...checkoutRequest,
+        cartDetailIds: [
+          ...(checkoutRequest?.cartDetailIds as []),
+          cartDetailId,
+        ],
+      };
+      setCheckoutRequest(temp);
+    }
+    window.localStorage.setItem("checkout", JSON.stringify(temp));
+  };
+
   return (
     <div className="w-max absolute p-4 rounded-md shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white top-12 right-0 flex flex-col gap-6 z-20">
-      {!cartItems ? (
+      {cartItems.length === 0 ? (
         <div className="">Cart is empty</div>
       ) : (
         <>
           <h1 className="text-xl">Shopping Cart</h1>
-          <div className="flex flex-col gap-8 overflow-hidden hover:overflow-auto h-32">
+          <div className="flex flex-col gap-8 overflow-hidden hover:overflow-auto h-[13rem]">
             {cartItems.map((item, index) => {
               return (
                 <div className="flex gap-4" key={index}>
-                  <Image
-                    src="https://images.unsplash.com/photo-1553880414-5fe13d83ddb6?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="item"
-                    width={72}
-                    height={96}
-                    className="object-cover rounded-md"
-                  />
+                  <Checkbox
+                    id={`${item.cartDetailId}`}
+                    key={index}
+                    isSelected={item.isSelected}
+                    onValueChange={() => handleSelect(item.cartDetailId, index)}
+                  >
+                    <Image
+                      src="https://images.unsplash.com/photo-1553880414-5fe13d83ddb6?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                      alt="item"
+                      width={72}
+                      height={96}
+                      className="object-cover rounded-md"
+                    />
+                  </Checkbox>
                   <div className="flex flex-col justify-between w-full">
                     {/* TOP */}
                     <div className="">

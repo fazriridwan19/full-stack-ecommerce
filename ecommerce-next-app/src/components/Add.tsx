@@ -56,9 +56,6 @@ const Add = ({
             </div>
           )}
         </div>
-        <button className="w-36 text-sm rounded-3xl ring-1 ring-custom text-lama py-2 px-4 hover:bg-custom hover:ring-white disabled:cursor-not-allowed disabled:bg-pink-200 disabled:ring-0 disabled:text-white disabled:ring-none">
-          Add to Cart
-        </button>
       </div>
     </div>
   );
