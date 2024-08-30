@@ -123,12 +123,28 @@ const SinglePage = ({ params }: { params: { slug: string } }) => {
               productOptions={productEx?.productOptions}
             />
           ) : (
-            <Add
-              key={product?.code}
-              productId={product?.code!}
-              variantId="00000000-0000-0000-0000-000000000000"
-              stockNumber={product?.stock as number}
-            />
+            <>
+              <div className="flex flex-col gap-2">
+                <h4 className="font-medium">Choose a Quantity</h4>
+                <Add
+                  key={product?.code}
+                  stockNumber={product?.stock as number}
+                  size="32"
+                />
+              </div>
+              {(product?.stock as number) < 1 ? (
+                <div className="text-xs">Product is out of stock</div>
+              ) : (
+                <div className="text-xs">
+                  Only{" "}
+                  <span className="text-orange-500">
+                    {product?.stock as number} items
+                  </span>{" "}
+                  left!
+                  <br /> {"Don't"} miss it
+                </div>
+              )}
+            </>
           )}
           <button className="h-10 w-36 text-sm rounded-3xl ring-1 ring-custom text-lama py-2 px-4 hover:bg-custom hover:ring-white disabled:cursor-not-allowed disabled:bg-pink-200 disabled:ring-0 disabled:text-white disabled:ring-none">
             Add to Cart

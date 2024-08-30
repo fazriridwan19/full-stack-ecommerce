@@ -16,35 +16,22 @@ const CartModal = ({ data: cartItems }: PropModel<CartResponse[]>) => {
     paymentId: null,
     cartDetailIds: [],
   });
-  const handleSelect = (cartDetailId: number, index: number) => {
-    let temp: CheckoutRequest | null = null;
+  const handleSelect = (cartDetailId: number) => {
     cartItems = cartItems.map((val) => {
       if (val.cartDetailId === cartDetailId) {
         val.isSelected = !val.isSelected;
       }
       return val;
     });
-    if (
-      !cartItems.find((item) => item.cartDetailId === cartDetailId)?.isSelected
-    ) {
-      checkoutRequest.cartDetailIds = checkoutRequest.cartDetailIds?.filter(
-        (val) => val !== cartDetailId
-      );
-      temp = {
-        ...checkoutRequest,
-        cartDetailIds: [...(checkoutRequest?.cartDetailIds as [])],
-      };
-      setCheckoutRequest(temp);
-    } else {
-      temp = {
-        ...checkoutRequest,
-        cartDetailIds: [
-          ...(checkoutRequest?.cartDetailIds as []),
-          cartDetailId,
-        ],
-      };
-      setCheckoutRequest(temp);
-    }
+    const temp: CheckoutRequest = {
+      ...checkoutRequest,
+      cartDetailIds: [
+        ...cartItems
+          .filter((item) => item.isSelected)
+          .map((item) => item.cartDetailId),
+      ],
+    };
+    setCheckoutRequest(temp);
     window.localStorage.setItem("checkout", JSON.stringify(temp));
   };
 
@@ -63,7 +50,7 @@ const CartModal = ({ data: cartItems }: PropModel<CartResponse[]>) => {
                     id={`${item.cartDetailId}`}
                     key={index}
                     isSelected={item.isSelected}
-                    onValueChange={() => handleSelect(item.cartDetailId, index)}
+                    onValueChange={() => handleSelect(item.cartDetailId)}
                   >
                     <Image
                       src="https://images.unsplash.com/photo-1553880414-5fe13d83ddb6?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
