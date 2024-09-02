@@ -68,7 +68,9 @@ const NavIcons = ({ data: cartItems }: PropModel<CartResponse[]>) => {
           {cartItems.length}
         </div>
       </div>
-      {isCartOpen && <CartModal data={cartItems} />}
+      {isCartOpen && (
+        <CartModal data={cartItems} closeModal={() => setIsCartOpen(false)} />
+      )}
     </div>
   );
 };

@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 
-const ProductList = ({ data: products }: PropModel<Product[]>) => {
+const ProductList = ({ data: products }: { data: Product[] }) => {
   const router = useRouter();
   const addProductToCart = async (productId: number) => {
     const isLoggedIn = await isAuthenticated();
@@ -30,7 +30,6 @@ const ProductList = ({ data: products }: PropModel<Product[]>) => {
           showConfirmButton: true,
         });
       } catch (error) {
-        console.log(error);
         Swal.fire({
           icon: "error",
           title: "Oops...",

@@ -129,7 +129,6 @@ const SinglePage = ({ params }: { params: { slug: string } }) => {
                 <Add
                   key={product?.code}
                   stockNumber={product?.stock as number}
-                  size="32"
                 />
               </div>
               {(product?.stock as number) < 1 ? (

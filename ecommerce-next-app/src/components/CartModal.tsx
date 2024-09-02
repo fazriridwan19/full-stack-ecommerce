@@ -2,12 +2,18 @@
 
 import { CheckoutRequest } from "@/dto/requests/CheckoutRequest";
 import { CartResponse } from "@/dto/responses/CartResponse";
-import { PropModel } from "@/models/PropModel";
-import { Checkbox, CheckboxGroup } from "@nextui-org/react";
+import { Checkbox } from "@nextui-org/react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useState } from "react";
 
-const CartModal = ({ data: cartItems }: PropModel<CartResponse[]>) => {
+const CartModal = ({
+  data: cartItems,
+  closeModal,
+}: {
+  data: CartResponse[];
+  closeModal: any;
+}) => {
   let idrFormatter = new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
@@ -80,7 +86,6 @@ const CartModal = ({ data: cartItems }: PropModel<CartResponse[]>) => {
                       <span className="text-gray-500">
                         Qty. {item.quantity}
                       </span>
-                      <span className=" text-red-500">Remove</span>
                     </div>
                   </div>
                 </div>
@@ -104,8 +109,11 @@ const CartModal = ({ data: cartItems }: PropModel<CartResponse[]>) => {
               Total harga tersebut belum termasuk ongkir.
             </p>
             <div className="flex justify-between text-sm">
-              <button className="rounded-md py-3 px-4 ring-1 ring-gray-300">
-                View Cart
+              <button
+                onClick={() => closeModal()}
+                className="rounded-md py-3 px-4 ring-1 ring-gray-300"
+              >
+                <Link href="/cart">View Cart</Link>
               </button>
               <button className="rounded-md py-3 px-4 bg-black text-white">
                 Checkout

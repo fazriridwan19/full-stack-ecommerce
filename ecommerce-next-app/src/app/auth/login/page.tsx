@@ -2,6 +2,7 @@
 import { EyeFilledIcon } from "@/components/EyeFilledIcon";
 import { EyeSlashFilledIcon } from "@/components/EyeSlashFilled";
 import { LoginRequest } from "@/dto/requests/LoginRequest";
+import { ErrorResponse } from "@/error/ErrorResponse";
 import { login } from "@/services/AuthService";
 import {
   Button,
@@ -16,6 +17,7 @@ import { AxiosError } from "axios";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useMemo, useState } from "react";
+import Swal from "sweetalert2";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -34,7 +36,12 @@ export default function LoginPage() {
         setLoading(false);
         router.push("/");
       } catch (error: any) {
-        console.log(AxiosError.from(await error));
+        setLoading(false);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: `${AxiosError.from(error).message}`,
+        });
       }
     }
   };
