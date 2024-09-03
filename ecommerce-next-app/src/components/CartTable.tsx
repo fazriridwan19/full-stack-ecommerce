@@ -1,4 +1,6 @@
 "use client";
+import { CartUpdateRequest } from "@/dto/requests/CartUpdateRequest";
+import { CheckoutRequest } from "@/dto/requests/CheckoutRequest";
 import { CartResponse } from "@/dto/responses/CartResponse";
 import {
   Button,
@@ -11,11 +13,19 @@ import {
   TableRow,
 } from "@nextui-org/react";
 import Image from "next/image";
-import Add from "./Add";
-import { CheckoutRequest } from "@/dto/requests/CheckoutRequest";
 import { useEffect, useState } from "react";
+import Add from "./Add";
 
-const CartTable = ({ items }: { items: CartResponse[] }) => {
+const CartTable = ({
+  items,
+  processData,
+}: {
+  items: CartResponse[];
+  processData: (
+    operation: "update" | "remove",
+    request: CartUpdateRequest
+  ) => Promise<void>;
+}) => {
   const [checkoutRequest, setCheckoutRequest] = useState<CheckoutRequest>({
     paymentId: null,
     cartDetailIds: [],
@@ -73,6 +83,10 @@ const CartTable = ({ items }: { items: CartResponse[] }) => {
         window.localStorage.getItem("checkout") as string
       ) as CheckoutRequest
     );
+  };
+
+  const handleRemove = async (cartDetailId: number) => {
+    await processData("remove", { cartDetailId });
   };
 
   useEffect(() => {
@@ -150,10 +164,20 @@ const CartTable = ({ items }: { items: CartResponse[] }) => {
                   <Add
                     stockNumber={item.product.stock}
                     defaultQuantity={item.quantity}
+                    cartDetailId={item.cartDetailId}
+                    processData={(
+                      operation: "update" | "remove",
+                      request: CartUpdateRequest
+                    ) => processData(operation, request)}
                   />
                 </TableCell>
                 <TableCell className="w-1/5 cursor-pointer">
-                  <Button className="bg-red-200">Hapus</Button>
+                  <Button
+                    onClick={() => handleRemove(item.cartDetailId)}
+                    className="bg-red-200"
+                  >
+                    Hapus
+                  </Button>
                 </TableCell>
               </TableRow>
             );

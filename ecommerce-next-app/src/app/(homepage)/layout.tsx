@@ -40,7 +40,7 @@ export default function ProductLayout({
 
   return (
     <>
-      <Navbar data={cartResponses} />
+      <Navbar data={cartResponses} fetchData={() => fetchData()} />
       {children}
       <Footer />
     </>

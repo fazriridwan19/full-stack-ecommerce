@@ -7,7 +7,13 @@ import NavIcons from "./NavIcons";
 import { PropModel } from "@/models/PropModel";
 import { CartResponse } from "@/dto/responses/CartResponse";
 
-const Navbar = ({ data: cartItems }: PropModel<CartResponse[]>) => {
+const Navbar = ({
+  data: cartItems,
+  fetchData,
+}: {
+  data: CartResponse[];
+  fetchData: () => Promise<void>;
+}) => {
   return (
     <div className="h-20 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 relative">
       {/* MOBILE */}
@@ -36,7 +42,7 @@ const Navbar = ({ data: cartItems }: PropModel<CartResponse[]>) => {
         {/* RIGHT */}
         <div className="w-2/3 xl:w-1/2 flex items-center justify-between gap-8">
           <SearchBar />
-          <NavIcons data={cartItems} />
+          <NavIcons data={cartItems} fetchData={() => fetchData()} />
         </div>
       </div>
     </div>

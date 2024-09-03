@@ -9,7 +9,13 @@ import ProfileModal from "./ProfileModal";
 import { PropModel } from "@/models/PropModel";
 import { CartResponse } from "@/dto/responses/CartResponse";
 
-const NavIcons = ({ data: cartItems }: PropModel<CartResponse[]>) => {
+const NavIcons = ({
+  data: cartItems,
+  fetchData,
+}: {
+  data: CartResponse[];
+  fetchData: () => Promise<void>;
+}) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -24,7 +30,15 @@ const NavIcons = ({ data: cartItems }: PropModel<CartResponse[]>) => {
       }
     }
   };
-  const handleCart = () => {
+  const handleCart = async () => {
+    const cartStatus: { isDataChange: boolean } = JSON.parse(
+      window.localStorage.getItem("cart") as string
+    ) as { isDataChange: boolean };
+    if (cartStatus && cartStatus.isDataChange) {
+      await fetchData();
+      cartStatus.isDataChange = false;
+      window.localStorage.setItem("cart", JSON.stringify(cartStatus));
+    }
     setIsCartOpen((prev) => !prev);
     if (isProfileOpen) {
       setIsProfileOpen((prev) => !prev);

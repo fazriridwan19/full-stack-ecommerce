@@ -1,24 +1,37 @@
 "use client";
+import { CartUpdateRequest } from "@/dto/requests/CartUpdateRequest";
 import { useState } from "react";
 
 const Add = ({
   stockNumber,
   defaultQuantity = 1,
+  cartDetailId,
+  processData,
 }: {
   stockNumber: number;
   defaultQuantity?: number;
+  cartDetailId?: number;
+  processData?: (
+    operation: "update" | "remove",
+    request: CartUpdateRequest
+  ) => Promise<void>;
 }) => {
   const [quantity, setQuantity] = useState(defaultQuantity);
-
-  // // TEMPORARY
-  // const stock = 4;
-
-  const handleQuantity = (type: "i" | "d") => {
+  const handleQuantity = async (type: "i" | "d") => {
+    let currentQuantity = quantity;
     if (type === "d" && quantity > 1) {
-      setQuantity((prev) => prev - 1);
+      currentQuantity -= 1;
+      setQuantity(currentQuantity);
     }
     if (type === "i" && quantity < stockNumber) {
-      setQuantity((prev) => prev + 1);
+      currentQuantity += 1;
+      setQuantity(currentQuantity);
+    }
+    if (processData) {
+      await processData("update", {
+        quantity: currentQuantity,
+        cartDetailId: cartDetailId,
+      });
     }
   };
 
