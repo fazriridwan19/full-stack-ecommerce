@@ -19,8 +19,10 @@ import Add from "./Add";
 const CartTable = ({
   items,
   processData,
+  setItems,
 }: {
   items: CartResponse[];
+  setItems: (items: CartResponse[]) => void;
   processData: (
     operation: "update" | "remove",
     request: CartUpdateRequest
@@ -55,6 +57,7 @@ const CartTable = ({
     };
     setSelectAll(false);
     setCheckoutRequest(temp);
+    setItems(items);
     window.localStorage.setItem("checkout", JSON.stringify(temp));
   };
 
@@ -74,6 +77,7 @@ const CartTable = ({
     };
     setSelectAll(isSelectAll);
     setCheckoutRequest(temp);
+    setItems(items);
     window.localStorage.setItem("checkout", JSON.stringify(temp));
   };
 

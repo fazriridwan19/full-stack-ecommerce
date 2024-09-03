@@ -10,6 +10,7 @@ import {
   removeItemFromCart,
   updateCart,
 } from "@/services/CartService";
+import { Button, Card, CardBody } from "@nextui-org/react";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -19,6 +20,10 @@ const CartPage = () => {
   const [request, setRequest] = useState<CheckoutRequest>({
     paymentId: null,
     cartDetailIds: [],
+  });
+  let idrFormatter = new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
   });
   const fetchStorageData = () => {
     setRequest(
@@ -91,15 +96,30 @@ const CartPage = () => {
   }, []);
 
   return (
-    <div className="mt-4 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 relative">
+    <div className="mt-4 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 relative flex flex-col gap-5">
       <CartTable
         items={items}
+        setItems={(items: CartResponse[]) => setItems(items)}
         processData={(
           operation: "update" | "remove",
           request: CartUpdateRequest
         ) => processData(operation, request)}
       />
-      {/* TODO: Component checkout */}
+      <Card>
+        <CardBody>
+          <div className="flex justify-between gap-3 items-center">
+            <span>
+              Total Harga:{" "}
+              {idrFormatter.format(
+                items
+                  .filter((item) => item.isSelected)
+                  .reduce((acumulator, item) => acumulator + item.totalPrice, 0)
+              )}
+            </span>
+            <Button className="bg-black text-white w-1/6">Checkout</Button>
+          </div>
+        </CardBody>
+      </Card>
     </div>
   );
 };
