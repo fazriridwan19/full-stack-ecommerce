@@ -33,7 +33,9 @@ const AddressOrder = () => {
               RT.18/RW.3, Kelurahan Paseban, Senen (KOST PONDOK DAMAI 2), KOTA
               JAKARTA PUSAT - SENEN, DKI JAKARTA, ID 10440
             </span>
-            <span className="text-sm font-light text-custom">Utama</span>
+            <span className="border border-custom text-xs p-1 font-light size-min text-custom">
+              Utama
+            </span>
             <Button
               onPress={() => onOpen()}
               className="cursor-pointer bg-custom text-white"

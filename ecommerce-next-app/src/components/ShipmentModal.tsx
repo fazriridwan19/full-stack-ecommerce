@@ -1,5 +1,6 @@
 import {
   Button,
+  Card,
   Modal,
   ModalBody,
   ModalContent,
@@ -9,7 +10,7 @@ import {
   RadioGroup,
 } from "@nextui-org/react";
 
-const AddressModal = ({
+const ShipmentModal = ({
   isOpen,
   onClose,
 }: {
@@ -22,33 +23,34 @@ const AddressModal = ({
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              Alamat saya
+              Pilih opsi pengiriman
             </ModalHeader>
             <ModalBody>
               <RadioGroup defaultValue={"tes"}>
                 <div className="p-2">
                   <div className="flex justify-between">
                     <Radio value="tes" color="danger">
-                      <div>
-                        <span className="font-bold">Fazri Ridwan</span>
-                        <span className="font-light text-sm">
-                          {" "}
-                          | (+62) 853 5230 7024
-                        </span>
-                      </div>
+                      <span className="font-bold">JNE Reguler</span>
                     </Radio>
-                    <div className="cursor-pointer text-custom">Ubah</div>
+                    <div className="text-custom">Rp. 45.000,00</div>
                   </div>
                   <div className="ms-[28px]">
                     <p className="font-light  mt-1 w-[90%] text-sm">
-                      Kost Pondok Damai 2, Jalan Paseban Timur Gang XV No. 300,
-                      RT.18/RW.3, Kelurahan Paseban, Senen (KOST PONDOK DAMAI
-                      2), KOTA JAKARTA PUSAT - SENEN, DKI JAKARTA, ID 10440
+                      Estimasi tiba: 10 - 13 Sep
                     </p>
-                    {/* Appear when addres is default */}
-                    <span className="border border-custom text-xs p-1 font-light size-min text-custom">
-                      Utama
-                    </span>
+                  </div>
+                </div>
+                <div className="p-2">
+                  <div className="flex justify-between">
+                    <Radio value="tes2" color="danger">
+                      <span className="font-bold">JNE Express</span>
+                    </Radio>
+                    <div className="text-custom">Rp. 85.000,00</div>
+                  </div>
+                  <div className="ms-[28px]">
+                    <p className="font-light  mt-1 w-[90%] text-sm">
+                      Estimasi tiba: 09 - 11 Sep
+                    </p>
                   </div>
                 </div>
               </RadioGroup>
@@ -68,4 +70,4 @@ const AddressModal = ({
   );
 };
 
-export default AddressModal;
+export default ShipmentModal;
