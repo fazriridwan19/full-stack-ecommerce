@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@nextui-org/input": "^2.2.4",
     "@nextui-org/react": "^2.4.6",
     "@nextui-org/system": "^2.2.5",

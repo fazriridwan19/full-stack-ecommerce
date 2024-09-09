@@ -1,13 +1,12 @@
 "use client";
 
+import { CartResponse } from "@/dto/responses/CartResponse";
 import { isAuthenticated } from "@/services/AuthService";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import CartModal from "./CartModal";
 import ProfileModal from "./ProfileModal";
-import { PropModel } from "@/models/PropModel";
-import { CartResponse } from "@/dto/responses/CartResponse";
 
 const NavIcons = ({
   data: cartItems,
