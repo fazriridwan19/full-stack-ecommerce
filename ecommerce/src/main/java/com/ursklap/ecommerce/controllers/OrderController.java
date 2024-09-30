@@ -15,18 +15,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/order")
 @AllArgsConstructor
 public class OrderController {
     private OrderService orderService;
 
-    @PostMapping("checkout")
-    public ResponseEntity<ResponseDto<String>> checkout(@RequestBody CheckoutRequest request, @Parameter(hidden = true) @CurrentUser CustomUserDetails userDetails) {
-        this.orderService.checkout(request, userDetails);
+    @GetMapping()
+    public ResponseEntity<ResponseDto<List<Order>>> findAll(@Parameter(hidden = true) @CurrentUser CustomUserDetails userDetails) {
         return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(ResponseApiGenerator.generator().generate("Success", HttpStatus.CREATED.value(), "Checkout success"));
+                .status(HttpStatus.OK)
+                .body(ResponseApiGenerator.generator().generate(this.orderService.findAllByUserId(userDetails.getCredential().getUser().getId()), HttpStatus.OK.value(), "Successfully retrieve orders"));
     }
 
     @GetMapping("{id}")
@@ -34,6 +35,14 @@ public class OrderController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ResponseApiGenerator.generator().generate(this.orderService.findByIdAsDto(id), HttpStatus.OK.value(), "Successfully retrieve order"));
+    }
+
+    @PostMapping("checkout")
+    public ResponseEntity<ResponseDto<String>> checkout(@RequestBody CheckoutRequest request, @Parameter(hidden = true) @CurrentUser CustomUserDetails userDetails) {
+        this.orderService.checkout(request, userDetails);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ResponseApiGenerator.generator().generate("Success", HttpStatus.CREATED.value(), "Checkout success"));
     }
 
     @PostMapping("payment")

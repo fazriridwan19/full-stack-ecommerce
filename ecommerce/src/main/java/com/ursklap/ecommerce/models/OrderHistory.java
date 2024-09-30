@@ -1,5 +1,6 @@
 package com.ursklap.ecommerce.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ursklap.ecommerce.models.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;

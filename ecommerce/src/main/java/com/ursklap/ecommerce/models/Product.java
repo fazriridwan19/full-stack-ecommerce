@@ -2,6 +2,7 @@ package com.ursklap.ecommerce.models;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ursklap.ecommerce.models.base.BaseEntity;
 
 import jakarta.persistence.Column;
@@ -52,9 +53,11 @@ public class Product extends BaseEntity {
     private List<Media> listMedia;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<CartDetail> cartDetails;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<OrderItem> orderItems;
 
     /*

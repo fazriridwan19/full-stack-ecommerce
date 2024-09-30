@@ -37,6 +37,19 @@ public class OrderService extends BaseService<Order, OrderRepository, Long> {
     private OrderItemRepository orderItemRepository;
     private PaymentRepository paymentRepository;
 
+    public List<Order> findAllByUserId(Long userId) {
+        return this.orderRepository.findAllByUserId(userId);
+    }
+
+    public OrderResponse findByIdAsDto(Long id) {
+        OrderResponse response = this.orderRepository
+                .findByIdAsDto(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order is not found"));
+        List<OrderItemResponse> orderItemResponse = this.orderItemRepository.findAllByOrderIdAsDto(id);
+        response.setItems(orderItemResponse);
+        return response;
+    }
+
     @Transactional
     public void checkout(CheckoutRequest request, CustomUserDetails userDetails) {
         Integer totalAmount = 0;
@@ -82,15 +95,6 @@ public class OrderService extends BaseService<Order, OrderRepository, Long> {
         this.orderRepository.save(order);
 
         this.saveOrderHistory(order, pending, "Processing order to payment");
-    }
-
-    public OrderResponse findByIdAsDto(Long id) {
-        OrderResponse response = this.orderRepository
-                .findByIdAsDto(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order is not found"));
-        List<OrderItemResponse> orderItemResponse = this.orderItemRepository.findAllByOrderIdAsDto(id);
-        response.setItems(orderItemResponse);
-        return response;
     }
 
     @Transactional

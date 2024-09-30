@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 @Builder
 public class ProfileResponse {
+    private String id;
     private String name;
     private String email;
     private String avatar;
