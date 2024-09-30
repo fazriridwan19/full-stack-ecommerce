@@ -13,9 +13,18 @@ import {
   User,
 } from "@nextui-org/react";
 import ShipmentModal from "./ShipmentModal";
+import { CartResponse } from "@/dto/responses/CartResponse";
 
-const OrderedProducts = () => {
+const OrderedProducts = ({
+  cartResponses,
+}: {
+  cartResponses: CartResponse[];
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure(); // Modal
+  let idrFormatter = new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+  });
   return (
     <>
       <Card className="p-3 w-full">
@@ -24,8 +33,6 @@ const OrderedProducts = () => {
             removeWrapper
             color="default"
             aria-label="Example static collection table"
-            id="1"
-            key={1}
           >
             <TableHeader>
               <TableColumn className="w-[30%]">Produk Dipesan</TableColumn>
@@ -35,42 +42,34 @@ const OrderedProducts = () => {
               <TableColumn className="w-[20%]">Subtotal Produk</TableColumn>
             </TableHeader>
             <TableBody>
-              <TableRow>
-                <TableCell className="w-[30%]">
-                  <div className="flex justify-start gap-x-4 w-full">
-                    <User
-                      name="Lenovo LOQ"
-                      avatarProps={{
-                        src: "https://images.unsplash.com/photo-1553880414-5fe13d83ddb6?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                      }}
-                    />
-                  </div>
-                </TableCell>
-                <TableCell className="font-light">
-                  Variasi: Hitam - SSD 512 GB
-                </TableCell>
-                <TableCell>Rp. 15.000.000,00</TableCell>
-                <TableCell>1</TableCell>
-                <TableCell>Rp. 15.000.000,00</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="w-[30%]">
-                  <div className="flex justify-start gap-x-4 w-full">
-                    <User
-                      name="Lenovo LOQ"
-                      avatarProps={{
-                        src: "https://images.unsplash.com/photo-1553880414-5fe13d83ddb6?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                      }}
-                    />
-                  </div>
-                </TableCell>
-                <TableCell className="font-light">
-                  Variasi: Hitam - SSD 512 GB
-                </TableCell>
-                <TableCell>Rp. 15.000.000,00</TableCell>
-                <TableCell>1</TableCell>
-                <TableCell>Rp. 15.000.000,00</TableCell>
-              </TableRow>
+              {cartResponses
+                .filter((item) => item.isSelected)
+                .map((item) => {
+                  return (
+                    <TableRow>
+                      <TableCell className="w-[30%]">
+                        <div className="flex justify-start gap-x-4 w-full">
+                          <User
+                            name={item.product.name}
+                            avatarProps={{
+                              src: "https://images.unsplash.com/photo-1553880414-5fe13d83ddb6?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                            }}
+                          />
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-light">
+                        Variasi: Hitam - SSD 512 GB
+                      </TableCell>
+                      <TableCell>
+                        {idrFormatter.format(item.product.price)}
+                      </TableCell>
+                      <TableCell>{item.quantity}</TableCell>
+                      <TableCell>
+                        {idrFormatter.format(item.totalPrice)}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
             </TableBody>
           </Table>
           <div className="flex justify-between w-full mt-3">
@@ -106,7 +105,14 @@ const OrderedProducts = () => {
             <span className="font-light text-sm">
               Total Pesanan (2 produk) :{" "}
             </span>
-            <span className="text-custom">Rp. 30.000.000,00</span>
+            <span className="text-custom">
+              {idrFormatter.format(
+                cartResponses.reduce(
+                  (acumulator, item) => acumulator + item.totalPrice,
+                  0
+                )
+              )}
+            </span>
           </div>
         </CardFooter>
       </Card>

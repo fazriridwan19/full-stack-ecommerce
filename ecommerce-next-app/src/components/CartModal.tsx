@@ -2,6 +2,7 @@
 
 import { CheckoutRequest } from "@/dto/requests/CheckoutRequest";
 import { CartResponse } from "@/dto/responses/CartResponse";
+import useProfileHooks from "@/hooks/ProfileHooks";
 import { Checkbox } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,13 +15,15 @@ const CartModal = ({
   data: CartResponse[];
   closeModal: any;
 }) => {
-  let idrFormatter = new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-  });
   const [checkoutRequest, setCheckoutRequest] = useState<CheckoutRequest>({
     paymentId: null,
     cartDetailIds: [],
+  });
+  const [profile] = useProfileHooks();
+
+  let idrFormatter = new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
   });
   const handleSelect = (cartDetailId: number) => {
     cartItems = cartItems.map((val) => {
@@ -38,7 +41,10 @@ const CartModal = ({
       ],
     };
     setCheckoutRequest(temp);
-    window.localStorage.setItem("checkout", JSON.stringify(temp));
+    window.localStorage.setItem(
+      `checkout-${profile?.id}`,
+      JSON.stringify(temp)
+    );
   };
 
   return (
@@ -109,12 +115,14 @@ const CartModal = ({
               Total harga tersebut belum termasuk ongkir.
             </p>
             <div className="flex justify-between text-sm">
-              <button
-                onClick={() => closeModal()}
-                className="rounded-md py-3 px-4 ring-1 ring-gray-300"
-              >
-                <Link href="/cart">View Cart</Link>
-              </button>
+              <Link href="/cart">
+                <button
+                  onClick={() => closeModal()}
+                  className="rounded-md py-3 px-4 ring-1 ring-gray-300"
+                >
+                  View Cart
+                </button>
+              </Link>
               <button className="rounded-md py-3 px-4 bg-black text-white">
                 Checkout
               </button>

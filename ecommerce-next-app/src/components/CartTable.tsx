@@ -15,6 +15,7 @@ import {
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Add from "./Add";
+import useProfileHooks from "@/hooks/ProfileHooks";
 
 const CartTable = ({
   items,
@@ -28,6 +29,7 @@ const CartTable = ({
     request: CartUpdateRequest
   ) => Promise<void>;
 }) => {
+  const [profile] = useProfileHooks();
   const [checkoutRequest, setCheckoutRequest] = useState<CheckoutRequest>({
     paymentId: null,
     cartDetailIds: [],
@@ -58,7 +60,10 @@ const CartTable = ({
     setSelectAll(false);
     setCheckoutRequest(temp);
     setItems(items);
-    window.localStorage.setItem("checkout", JSON.stringify(temp));
+    window.localStorage.setItem(
+      `checkout-${profile?.id}`,
+      JSON.stringify(temp)
+    );
   };
 
   const handleSelectAll = () => {
@@ -78,13 +83,16 @@ const CartTable = ({
     setSelectAll(isSelectAll);
     setCheckoutRequest(temp);
     setItems(items);
-    window.localStorage.setItem("checkout", JSON.stringify(temp));
+    window.localStorage.setItem(
+      `checkout-${profile?.id}`,
+      JSON.stringify(temp)
+    );
   };
 
   const getDataCheckout = () => {
     setCheckoutRequest(
       JSON.parse(
-        window.localStorage.getItem("checkout") as string
+        window.localStorage.getItem(`checkout-${profile?.id}`) as string
       ) as CheckoutRequest
     );
   };

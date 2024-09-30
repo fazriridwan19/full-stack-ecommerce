@@ -1,3 +1,4 @@
+"use client";
 import {
   Card,
   CardHeader,
@@ -6,9 +7,21 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import AddressModal from "./AddressModal";
+import { ProfileResponse } from "@/dto/responses/ProfileResponse";
+import { useEffect, useState } from "react";
+import { AddressResponse } from "@/dto/responses/AddressResponse";
 
-const AddressOrder = () => {
+const AddressOrder = ({ profile }: { profile: ProfileResponse | null }) => {
+  const [address, setAddress] = useState<AddressResponse | null | undefined>(
+    null
+  );
   const { isOpen, onOpen, onClose } = useDisclosure(); // Modal
+  const fetchAddress = () => {
+    setAddress(profile?.addresses.find((address) => address.defaultAddress));
+  };
+  useEffect(() => {
+    fetchAddress();
+  }, [profile]);
   return (
     <>
       <Card className="p-3 w-full">
@@ -27,11 +40,12 @@ const AddressOrder = () => {
         <CardBody>
           {/* Alamat */}
           <div className="flex gap-2 justify-between">
-            <span className="font-semibold">Fazri Ridwan (+62)5352307024</span>
+            <span className="font-semibold">
+              {profile?.name} {profile?.phoneNumber}
+            </span>
             <span className="w-[60%]">
-              Kost Pondok Damai 2, Jalan Paseban Timur Gang XV No. 300,
-              RT.18/RW.3, Kelurahan Paseban, Senen (KOST PONDOK DAMAI 2), KOTA
-              JAKARTA PUSAT - SENEN, DKI JAKARTA, ID 10440
+              {address?.street}, {address?.city}, {address?.province}, ID{" "}
+              {address?.code}
             </span>
             <span className="border border-custom text-xs p-1 font-light size-min text-custom">
               Utama
@@ -45,7 +59,11 @@ const AddressOrder = () => {
           </div>
         </CardBody>
       </Card>
-      <AddressModal isOpen={isOpen} onClose={() => onClose()} />
+      <AddressModal
+        profile={profile}
+        isOpen={isOpen}
+        onClose={() => onClose()}
+      />
     </>
   );
 };

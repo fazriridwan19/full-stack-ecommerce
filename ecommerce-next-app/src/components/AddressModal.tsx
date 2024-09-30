@@ -1,3 +1,5 @@
+import { AddressResponse } from "@/dto/responses/AddressResponse";
+import { ProfileResponse } from "@/dto/responses/ProfileResponse";
 import {
   Button,
   Modal,
@@ -12,9 +14,11 @@ import {
 const AddressModal = ({
   isOpen,
   onClose,
+  profile,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  profile: ProfileResponse | null;
 }) => {
   return (
     <Modal size="2xl" isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
@@ -25,32 +29,41 @@ const AddressModal = ({
               Alamat saya
             </ModalHeader>
             <ModalBody>
-              <RadioGroup defaultValue={"tes"}>
-                <div className="p-2">
-                  <div className="flex justify-between">
-                    <Radio value="tes" color="danger">
-                      <div>
-                        <span className="font-bold">Fazri Ridwan</span>
-                        <span className="font-light text-sm">
-                          {" "}
-                          | (+62) 853 5230 7024
-                        </span>
+              <RadioGroup
+                defaultValue={`address-${profile?.addresses
+                  .filter((address) => address.defaultAddress)
+                  .map((address) => address.id)}`}
+              >
+                {profile?.addresses.map((address, index) => {
+                  return (
+                    <div className="p-2" key={index}>
+                      <div className="flex justify-between">
+                        <Radio value={`address-${address.id}`} color="danger">
+                          <div>
+                            <span className="font-bold">{profile?.name}</span>
+                            <span className="font-light text-sm">
+                              {" "}
+                              | {profile?.phoneNumber}
+                            </span>
+                          </div>
+                        </Radio>
+                        <div className="cursor-pointer text-custom">Ubah</div>
                       </div>
-                    </Radio>
-                    <div className="cursor-pointer text-custom">Ubah</div>
-                  </div>
-                  <div className="ms-[28px]">
-                    <p className="font-light  mt-1 w-[90%] text-sm">
-                      Kost Pondok Damai 2, Jalan Paseban Timur Gang XV No. 300,
-                      RT.18/RW.3, Kelurahan Paseban, Senen (KOST PONDOK DAMAI
-                      2), KOTA JAKARTA PUSAT - SENEN, DKI JAKARTA, ID 10440
-                    </p>
-                    {/* Appear when addres is default */}
-                    <span className="border border-custom text-xs p-1 font-light size-min text-custom">
-                      Utama
-                    </span>
-                  </div>
-                </div>
+                      <div className="ms-[28px]">
+                        <p className="font-light  mt-1 w-[90%] text-sm">
+                          {address.street}, {address.city}, {address.province},
+                          ID {address.code}
+                        </p>
+                        {/* Appear when addres is default */}
+                        {address.defaultAddress && (
+                          <span className="border border-custom text-xs p-1 font-light size-min text-custom">
+                            Utama
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
               </RadioGroup>
             </ModalBody>
             <ModalFooter>
