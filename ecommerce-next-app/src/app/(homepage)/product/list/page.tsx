@@ -1,7 +1,5 @@
 "use client";
 import Filter from "@/components/Filter";
-import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
 import ProductList from "@/components/ProductList";
 import { Product } from "@/models/Product";
 import { getProducts } from "@/services/ProductService";

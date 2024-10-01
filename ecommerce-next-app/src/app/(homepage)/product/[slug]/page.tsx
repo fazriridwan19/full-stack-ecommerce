@@ -2,11 +2,12 @@
 
 import Add from "@/components/Add";
 import CustomizeProducts from "@/components/CustomizeProducts";
-import Footer from "@/components/Footer";
 import ProductImages from "@/components/ProductImages";
 import { Product } from "@/models/Product";
 import { getProductById } from "@/services/ProductService";
+import React from "react";
 import { useEffect, useState } from "react";
+
 const productEx = {
   id: 1,
   code: "00000",
@@ -70,6 +71,7 @@ const productEx = {
   ],
 };
 const SinglePage = ({ params }: { params: { slug: string } }) => {
+  // TODO : Use custom hooks
   const [product, setProduct] = useState<Product | null>(null);
   const fetchData = async () => {
     try {

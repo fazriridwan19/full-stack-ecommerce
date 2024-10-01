@@ -14,6 +14,7 @@ import {
 } from "@nextui-org/react";
 import ShipmentModal from "./ShipmentModal";
 import { CartResponse } from "@/dto/responses/CartResponse";
+import React from "react";
 
 const OrderedProducts = ({
   cartResponses,
@@ -44,9 +45,9 @@ const OrderedProducts = ({
             <TableBody>
               {cartResponses
                 .filter((item) => item.isSelected)
-                .map((item) => {
+                .map((item, index) => {
                   return (
-                    <TableRow>
+                    <TableRow key={index}>
                       <TableCell className="w-[30%]">
                         <div className="flex justify-start gap-x-4 w-full">
                           <User

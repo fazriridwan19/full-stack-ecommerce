@@ -1,15 +1,15 @@
 "use server";
 
-import { ProfileResponse } from "@/dto/responses/ProfileResponse";
-import { getToken } from "./AuthService";
 import { ApiResponse } from "@/dto/responses/ApiResponse";
-import axios, { AxiosError, AxiosHeaders } from "axios";
+import { PaymentResponse } from "@/dto/responses/PaymentResponse";
+import axios, { AxiosError } from "axios";
+import { getToken } from "./AuthService";
 
-export const getProfile = async () => {
+export const getPayments = async (type = "") => {
   try {
     const token = await getToken();
-    const res = await axios.request<ApiResponse<ProfileResponse>>({
-      url: "http://localhost:9100/api/v1/profile/get",
+    const res = await axios.request<ApiResponse<PaymentResponse[]>>({
+      url: `http://localhost:9100/api/v1/payments?type=${type}`,
       method: "get",
       headers: {
         Authorization: `Bearer ${token}`,

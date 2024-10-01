@@ -1,15 +1,18 @@
-import {
-  Badge,
-  Button,
-  Card,
-  CardBody,
-  Radio,
-  RadioGroup,
-} from "@nextui-org/react";
-import { CheckIcon } from "./CheckIcon";
+"use client";
+
+import usePaymentHooks from "@/hooks/PaymentHooks";
+import { Button, Card, CardBody, Radio, RadioGroup } from "@nextui-org/react";
 import Image from "next/image";
+import { useState } from "react";
 
 const PaymentMethod = () => {
+  const [type, setType] = useState<string | null>("transfer");
+  const [payments, getPayments] = usePaymentHooks(type);
+  const handlePaymentType = async (type: string) => {
+    setType(type);
+    await getPayments();
+  };
+
   return (
     <Card className="p-3 w-full">
       <CardBody>
@@ -17,60 +20,45 @@ const PaymentMethod = () => {
           <div className="flex gap-10 justify-start items-center p-3">
             <span className="font-semibold">Metode pembayaran</span>
             <div className="flex flex-wrap w-[70%] gap-2">
-              <div className="border p-2 text-sm cursor-pointer">COD</div>
-              <div className="border p-2 text-sm cursor-pointer">E-Wallet</div>
-              <Badge
-                content={<CheckIcon />}
-                color="danger"
-                placement="bottom-right"
+              <div
+                className={`border ${
+                  type === "e_wallet" && "border-red-600"
+                } p-2 text-sm cursor-pointer`}
+                onClick={() => handlePaymentType("e_wallet")}
               >
-                <div className="border border-red-600 p-2 text-sm cursor-pointer">
-                  Bank Transfer
-                </div>
-              </Badge>
+                E-Wallet
+              </div>
+              <div
+                className={`border ${
+                  type === "transfer" && "border-red-600"
+                } p-2 text-sm cursor-pointer`}
+                onClick={() => handlePaymentType("transfer")}
+              >
+                Bank T
+              </div>
             </div>
           </div>
           {/* Detail payment method */}
           <div className="flex gap-7 justify-start p-3">
             <span className="font-semibold w-[15%]">Pilih Bank</span>
-            <RadioGroup defaultValue={"tes"}>
+            <RadioGroup defaultValue={"1"}>
               <div className="flex flex-col gap-5">
-                <Radio value="tes" color="danger">
-                  <div className="flex gap-4 items-center ms-5">
-                    <Image
-                      className="border"
-                      src={"/bca.jpg"}
-                      alt="bca"
-                      width={50}
-                      height={50}
-                    />
-                    <span className="font-normal">Bank BCA</span>
-                  </div>
-                </Radio>
-                <Radio value="tes2" color="danger">
-                  <div className="flex gap-4 items-center ms-5">
-                    <Image
-                      className="border"
-                      src={"/bni.jpg"}
-                      alt="bca"
-                      width={50}
-                      height={50}
-                    />
-                    <span className="font-normal">Bank BNI</span>
-                  </div>
-                </Radio>
-                <Radio value="tes3" color="danger">
-                  <div className="flex gap-4 items-center ms-5">
-                    <Image
-                      className="border"
-                      src={"/bri.png"}
-                      alt="bca"
-                      width={50}
-                      height={50}
-                    />
-                    <span className="font-normal">Bank BRI</span>
-                  </div>
-                </Radio>
+                {payments.map((payment, index) => {
+                  return (
+                    <Radio value={payment.id + ""} color="danger" key={index}>
+                      <div className="flex gap-4 items-center ms-5">
+                        <Image
+                          className="border"
+                          src={"/bca.jpg"}
+                          alt="bca"
+                          width={50}
+                          height={50}
+                        />
+                        <span className="font-normal">{payment.name}</span>
+                      </div>
+                    </Radio>
+                  );
+                })}
               </div>
             </RadioGroup>
           </div>
