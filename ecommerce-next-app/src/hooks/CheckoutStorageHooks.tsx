@@ -1,10 +1,13 @@
 "use client";
 import { CheckoutRequest } from "@/dto/requests/CheckoutRequest";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import useProfileHooks from "./ProfileHooks";
-import { ProfileResponse } from "@/dto/responses/ProfileResponse";
 
-const useCheckoutStorageHooks = (): [CheckoutRequest, boolean] => {
+const useCheckoutStorageHooks = (): [
+  CheckoutRequest,
+  boolean,
+  Dispatch<SetStateAction<CheckoutRequest>>
+] => {
   const [profile] = useProfileHooks();
   const [checkoutRequest, setCheckoutRequest] = useState<CheckoutRequest>({
     paymentId: null,
@@ -39,7 +42,7 @@ const useCheckoutStorageHooks = (): [CheckoutRequest, boolean] => {
     fetchStorageData();
   }, [profile]);
 
-  return [checkoutRequest, error];
+  return [checkoutRequest, error, setCheckoutRequest];
 };
 
 export default useCheckoutStorageHooks;

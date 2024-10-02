@@ -1,9 +1,8 @@
 "use server";
-import { ApiResponse } from "@/dto/responses/ApiResponse";
 import { LoginRequest } from "@/dto/requests/LoginRequest";
+import { ApiResponse } from "@/dto/responses/ApiResponse";
 import axios, { AxiosError } from "axios";
 import { deleteCookie, getCookie, hasCookie, setCookie } from "./CookieService";
-import { ErrorResponse } from "@/error/ErrorResponse";
 
 export const login = async (loginRequest: LoginRequest) => {
   try {

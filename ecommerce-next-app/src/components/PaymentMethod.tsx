@@ -1,16 +1,41 @@
 "use client";
 
+import { CheckoutRequest } from "@/dto/requests/CheckoutRequest";
+import { ApiResponse } from "@/dto/responses/ApiResponse";
+import { CartResponse } from "@/dto/responses/CartResponse";
+import { ProfileResponse } from "@/dto/responses/ProfileResponse";
+import useCheckoutStorageHooks from "@/hooks/CheckoutStorageHooks";
 import usePaymentHooks from "@/hooks/PaymentHooks";
 import { Button, Card, CardBody, Radio, RadioGroup } from "@nextui-org/react";
 import Image from "next/image";
 import { useState } from "react";
 
-const PaymentMethod = () => {
+const PaymentMethod = ({
+  cartResponses,
+  checkoutItems,
+  profile,
+}: {
+  cartResponses: CartResponse[];
+  checkoutItems: (request: CheckoutRequest) => Promise<void>;
+  profile: ProfileResponse;
+}) => {
   const [type, setType] = useState<string | null>("transfer");
   const [payments, getPayments] = usePaymentHooks(type);
+  const [checkoutRequest] = useCheckoutStorageHooks();
+  let idrFormatter = new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+  });
   const handlePaymentType = async (type: string) => {
     setType(type);
     await getPayments();
+  };
+  const handlePaymentMethod = (paymentId: number) => {
+    checkoutRequest.paymentId = paymentId;
+    window.localStorage.setItem(
+      `checkout-${profile.id}`,
+      JSON.stringify(checkoutRequest)
+    );
   };
 
   return (
@@ -34,18 +59,23 @@ const PaymentMethod = () => {
                 } p-2 text-sm cursor-pointer`}
                 onClick={() => handlePaymentType("transfer")}
               >
-                Bank T
+                Bank Transfer
               </div>
             </div>
           </div>
           {/* Detail payment method */}
           <div className="flex gap-7 justify-start p-3">
             <span className="font-semibold w-[15%]">Pilih Bank</span>
-            <RadioGroup defaultValue={"1"}>
+            <RadioGroup>
               <div className="flex flex-col gap-5">
                 {payments.map((payment, index) => {
                   return (
-                    <Radio value={payment.id + ""} color="danger" key={index}>
+                    <Radio
+                      value={payment.id + ""}
+                      color="danger"
+                      key={index}
+                      onClick={() => handlePaymentMethod(payment.id)}
+                    >
                       <div className="flex gap-4 items-center ms-5">
                         <Image
                           className="border"
@@ -71,13 +101,30 @@ const PaymentMethod = () => {
             <span className="font-light text-sm">Total Pembayaran</span>
           </div>
           <div className="flex flex-col w-[15%] gap-3">
-            <span className="text-sm">Rp. 30.000.000,00</span>
-            <span className="text-sm">Rp. 45.000,00</span>
-            <span className="text-red-600">Rp. 30.045.000,00</span>
+            <span className="text-sm">
+              {idrFormatter.format(
+                cartResponses.reduce(
+                  (acumulator, item) => acumulator + item.totalPrice,
+                  0
+                )
+              )}
+            </span>
+            <span className="text-sm">Rp. 0</span>
+            <span className="text-red-600">
+              {idrFormatter.format(
+                cartResponses.reduce(
+                  (acumulator, item) => acumulator + item.totalPrice,
+                  0
+                )
+              )}
+            </span>
           </div>
         </div>
         <div className="flex justify-end p-4">
-          <Button className="bg-custom p-2 text-white w-[35%]">
+          <Button
+            className="bg-custom p-2 text-white w-[35%]"
+            onClick={() => checkoutItems(checkoutRequest)}
+          >
             Buat Pesanan
           </Button>
         </div>

@@ -8,7 +8,6 @@ import { CartUpdateRequest } from "@/dto/requests/CartUpdateRequest";
 
 export const addProduct = async (request: CartRequest) => {
   const token = await getToken();
-
   const res = await axios.request<ApiResponse<CartResponse>>({
     url: "http://localhost:9100/api/v1/cart/add-product",
     data: request,
